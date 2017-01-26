@@ -12,7 +12,7 @@ _RAW_DATA_PATH = os.path.join(_ROOT, 'data/raw/')
 test_input_filepath = os.path.join(_RAW_DATA_PATH, '113')
 
 
-class Congress(list):
+class Congress:
 
     def __init__(self, session_number):
 
@@ -20,6 +20,57 @@ class Congress(list):
         self.input_filepath = os.path.join(_RAW_DATA_PATH, self.session_number)
         self.measures_voted_on = []
         self.records = Records()
+
+    def filter_abstaining_votes(self, data):
+
+        if all(x in ['Present', 'Not Voting'] for x in data['votes'].keys()):
+            pass
+
+        try:
+            yes_votes = data['votes']['Aye']
+        except KeyError:
+            try:
+                yes_votes = data['votes']['Yea']
+            except KeyError:
+                pass
+                yes_votes = []
+
+        try:
+            no_votes = data['votes']['No']
+        except KeyError:
+            try:
+                no_votes = data['votes']['Nay']
+            except KeyError:
+                pass
+                no_votes = []
+
+        return yes_votes, no_votes
+
+    def build_vote_records(self, yes_votes, no_votes, measure):
+
+        if yes_votes:
+
+            for record in yes_votes:
+
+                name = record['display_name']
+                congress_id = record['id']
+                party = record['party']
+                state = record['state']
+                vote = 1
+                self.records.update_congressman(
+                    name, congress_id, party, state, measure, vote)
+
+        if no_votes:
+
+            for record in no_votes:
+
+                name = record['display_name']
+                congress_id = record['id']
+                party = record['party']
+                state = record['state']
+                vote = 0
+                self.records.update_congressman(
+                    name, congress_id, party, state, measure, vote)
 
     def get_measures_voted_on(self):
 
@@ -35,48 +86,9 @@ class Congress(list):
 
             self.measures_voted_on.append((vote_date, measure, result))
 
-            if all(x in ['Present', 'Not Voting'] for x in data['votes'].keys()):
-                continue
-            print data['votes'].keys()
-            try:
-                yea_votes = data['votes']['Aye']
-            except KeyError:
-                try:
-                    yea_votes = data['votes']['Yea']
-                except KeyError:
-                    continue
+            yea_votes, nay_votes = self.filter_abstaining_votes(data)
 
-            try:
-                nay_votes = data['votes']['No']
-            except KeyError:
-                try:
-                    nay_votes = data['votes']['Nay']
-                except KeyError:
-                    continue
-
-            if yea_votes:
-
-                for record in nay_votes:
-
-                    name = record['display_name']
-                    congress_id = record['id']
-                    party = record['party']
-                    state = record['state']
-                    vote = 1
-                    self.records.update_congressman(
-                        name, congress_id, party, state, measure, vote)
-
-            if nay_votes:
-
-                for record in nay_votes:
-
-                    name = record['display_name']
-                    congress_id = record['id']
-                    party = record['party']
-                    state = record['state']
-                    vote = 0
-                    self.records.update_congressman(
-                        name, congress_id, party, state, measure, vote)
+            self.build_vote_records(yea_votes, nay_votes, measure)
 
         self.measures_voted_on.sort(key=lambda tup: tup[0])
 
@@ -97,30 +109,10 @@ class Records:
                       "party": party, "state": state, "votes": [(measure, vote)]}
             self.records[name] = record
 
-
-# class Congressman(dict):
-#
-#     def __init__(self, name, congress_id, party, state):
-#
-#         self.name = name
-#         self.id = congress_id
-#         self.party = party
-#         self.measures_voted_on = []
-#
-#     def add_vote(self, measure, vote):
-#
-#         self.measures_voted_on.append((measure, vote))
-#
-#     def get_votes(self):
-#
-#         self.measures_voted_on.sort(key=lambda tup: tup[0])
-#
-#         return self.measures_voted_on
-
-    # def get_votes(self, data):
-    #     vote_id = data['vote_id']
-    #     votes_yay = data['votes']['Aye']
-    #     votes_nay = data['votes']['No']
+    def show_records(self):
+        for k, v in self.records.iteritems():
+            print k, v, '\n'
+            print len(v['votes']), '\n'
 
 
 @click.command()
@@ -139,6 +131,7 @@ def main(session_number):
     # parse raw/ data directory
     congress = Congress(session_number)
     measures_voted_on = congress.get_measures_voted_on()
+    congress.records.show_records()
 
     # create dataframe
     # rows are congress people
