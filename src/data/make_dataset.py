@@ -21,6 +21,46 @@ class Congress:
         self.measures_voted_on = []
         self.records = Records()
 
+    def get_measures_voted_on(self):
+
+        for filename in glob2.iglob(self.input_filepath + '/**/*.json'):
+
+            with open(filename) as jfile:
+
+                data = json.load(jfile)
+
+            vote_date = data['date']
+            measure = data['vote_id']
+            result = data['result']
+
+            self.measures_voted_on.append((vote_date, measure, result))
+            yea_votes, nay_votes = self.records.filter_abstaining_votes(data)
+            self.records.build_vote_records(yea_votes, nay_votes, measure)
+
+        self.measures_voted_on.sort(key=lambda tup: tup[0])
+
+        return self.measures_voted_on
+
+
+class Records:
+
+    def __init__(self):
+        self.records = {}
+
+    def update_congressman(self, name, congress_id, party, state, measure, vote):
+        try:
+            self.records[name]['votes'][measure] = vote
+
+        except KeyError:
+            record = {'congress_id': congress_id,
+                      'party': party, 'state': state, 'votes': {measure: vote}}
+            self.records[name] = record
+
+    def show_records(self):
+        for k, v in self.records.iteritems():
+            print k, v, '\n'
+            print len(v['votes']), '\n'
+
     def filter_abstaining_votes(self, data):
 
         if all(x in ['Present', 'Not Voting'] for x in data['votes'].keys()):
@@ -57,7 +97,7 @@ class Congress:
                 party = record['party']
                 state = record['state']
                 vote = 1
-                self.records.update_congressman(
+                self.update_congressman(
                     name, congress_id, party, state, measure, vote)
 
         if no_votes:
@@ -69,50 +109,34 @@ class Congress:
                 party = record['party']
                 state = record['state']
                 vote = 0
-                self.records.update_congressman(
+                self.update_congressman(
                     name, congress_id, party, state, measure, vote)
 
-    def get_measures_voted_on(self):
 
-        for filename in glob2.iglob(self.input_filepath + '/**/*.json'):
-
-            with open(filename) as jfile:
-
-                data = json.load(jfile)
-
-            vote_date = data['date']
-            measure = data['vote_id']
-            result = data['result']
-
-            self.measures_voted_on.append((vote_date, measure, result))
-
-            yea_votes, nay_votes = self.filter_abstaining_votes(data)
-
-            self.build_vote_records(yea_votes, nay_votes, measure)
-
-        self.measures_voted_on.sort(key=lambda tup: tup[0])
-
-        return self.measures_voted_on
-
-
-class Records:
+class Dataset:
 
     def __init__(self):
-        self.records = {}
+        pass
 
-    def update_congressman(self, name, congress_id, party, state, measure, vote):
-        try:
-            self.records[name]['votes'].append((measure, vote))
+    # def construct(self, measures_voted_on, voting_records):
+    #     # for i in measures_voted_on:
+    #     #     print i, '\n'
+    #     for tup in measures_voted_on:
+    #
+    #         measure = tup[1]
+    #
+    #         for rep in voting_records.keys():
+    #
+    #             if
+    #
+    #             voting_records[rep]['votes']
 
-        except KeyError:
-            record = {"congress_id": congress_id,
-                      "party": party, "state": state, "votes": [(measure, vote)]}
-            self.records[name] = record
 
-    def show_records(self):
-        for k, v in self.records.iteritems():
-            print k, v, '\n'
-            print len(v['votes']), '\n'
+# [tup[1] for tup in voting_records[rep]['votes'] for rep in voting_records.keys() if tup[0] in ...]
+
+        # pd.DataFrame(data=data[1:,1:],    # values
+        #             index=data[1:,0],    # 1st column as index
+        #               columns=data[0,1:])  # 1st row as the column names
 
 
 @click.command()
@@ -126,16 +150,21 @@ def main(session_number):
     logger = logging.getLogger(__name__)
     logger.info('making final data set from raw data')
 
-    # initialize some variables and dataframes
-
-    # parse raw/ data directory
+    # create congress for a given session, e.g., 113th congress
     congress = Congress(session_number)
+
+    # retreive list of tuples of vote measure metadata
     measures_voted_on = congress.get_measures_voted_on()
-    congress.records.show_records()
+
+    # retreive congressional vote dictionary
+    records = congress.records
+    records.show_records()
 
     # create dataframe
     # rows are congress people
     # columns are measures voted on, ordered by vote_id
+    # dataset = Dataset()
+    # dataset.construct(measures_voted_on, records)
 
 
 if __name__ == '__main__':
