@@ -7,6 +7,8 @@ from dotenv import find_dotenv, load_dotenv
 import glob2
 import json
 from collections import OrderedDict
+import numpy as np
+import pandas as pd
 
 _ROOT = str(Path(os.getcwd()).parents[1])
 _RAW_DATA_PATH = os.path.join(_ROOT, 'data/raw/')
@@ -140,7 +142,7 @@ class Dataset:
 
     def __init__(self):
 
-        pass
+        self.rows = []
 
     # // TODO Finish the following construct function
     # now that I can access votes with voting_records[rep]['votes'][measure]
@@ -149,15 +151,19 @@ class Dataset:
 
         for rep in voting_records.keys():
 
+            row = [rep]
+
             for measure in measures_voted_on:
 
                 if voting_records[rep]['votes'][measure]:
 
-                    pass
+                    row.append(voting_records[rep]['votes'][measure])
 
                 else:
 
-                    pass
+                    row.append(np.nan)
+
+            self.rows.append(row)
 
         # pd.DataFrame(data=data[1:,1:],    # values
         #             index=data[1:,0],    # 1st column as index
