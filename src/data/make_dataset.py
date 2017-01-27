@@ -159,19 +159,6 @@ class Dataset:
 
                     pass
 
-        # def construct(self, measures_voted_on, voting_records):
-        #     # for i in measures_voted_on:
-        #     #     print i, '\n'
-        #     for tup in measures_voted_on:
-        #
-        #         measure = tup[1]
-        #
-        #         for rep in voting_records.keys():
-        #
-        #             if
-        #
-        #             voting_records[rep]['votes']
-
         # pd.DataFrame(data=data[1:,1:],    # values
         #             index=data[1:,0],    # 1st column as index
         #               columns=data[0,1:])  # 1st row as the column names
