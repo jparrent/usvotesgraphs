@@ -14,6 +14,16 @@ test_input_filepath = os.path.join(_RAW_DATA_PATH, '113')
 
 
 class Congress:
+    """This class is used to build a dictionary of measures that have been
+    voted on for a given congressional session:
+    measures_voted_on = {
+        "measure": {
+            "date",
+            "result"
+         },
+    }
+
+    """
 
     def __init__(self, session_number):
 
@@ -45,6 +55,17 @@ class Congress:
 
 
 class Records:
+    """To make it easy to construct a dataframe of votes ((1 yea, 0 nay)) per
+    representative, this class is used to create records that look like this:
+    records = {
+        "name": {
+            "congress_id",
+            "party",
+            "state"
+            "votes": {"measure": vote (1 yea, 0 nay)}
+         },
+    }
+    """
 
     def __init__(self):
         self.records = {}
