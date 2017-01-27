@@ -3,7 +3,7 @@ import os
 from pathlib import Path
 import click
 import logging
-from dotenv import find_dotenv, load_dotenv
+# from dotenv import find_dotenv, load_dotenv
 import glob2
 import json
 from collections import OrderedDict
@@ -72,6 +72,11 @@ class Records:
     def __init__(self):
         self.records = {}
 
+    def show_records(self):
+        for k, v in self.records.iteritems():
+            print k, v, '\n'
+            print len(v['votes']), '\n'
+
     def update_congressman(self, name, congress_id, party, state, measure, vote):
         try:
             self.records[name]['votes'][measure] = vote
@@ -80,11 +85,6 @@ class Records:
             record = {'congress_id': congress_id,
                       'party': party, 'state': state, 'votes': {measure: vote}}
             self.records[name] = record
-
-    def show_records(self):
-        for k, v in self.records.iteritems():
-            print k, v, '\n'
-            print len(v['votes']), '\n'
 
     def filter_abstaining_votes(self, data):
 
@@ -155,19 +155,19 @@ class Dataset:
 
             for measure in measures_voted_on:
 
-                if voting_records[rep]['votes'][measure]:
+                try:
 
                     row.append(voting_records[rep]['votes'][measure])
 
-                else:
+                except KeyError:
 
                     row.append(np.nan)
 
             self.rows.append(row)
 
-        # pd.DataFrame(data=data[1:,1:],    # values
-        #             index=data[1:,0],    # 1st column as index
-        #               columns=data[0,1:])  # 1st row as the column names
+        return pd.DataFrame(data=self.rows)   # values
+        # index=self.rows[0:, 0])    # 1st column as index
+        #   columns=rows[0,1:])  # 1st row as the column names
 
 
 @click.command()
@@ -186,7 +186,11 @@ def main(session_number):
     measures_voted_on = congress.get_measures_voted_on()
 
     # retreive congressional vote dictionary
-    records = congress.records
+    records = congress.records.records
+    # print len(records)
+    # print len(measures_voted_on)
+    dataframe = Dataset().construct(measures_voted_on, records)
+    print dataframe
     # records.show_records()
 
     # create dataframe
@@ -207,6 +211,6 @@ if __name__ == '__main__':
 
     # find .env automagically by walking up directories until it's found, then
     # load up the .env entries as environment variables
-    load_dotenv(find_dotenv())
+    # load_dotenv(find_dotenv())
 
     main()
