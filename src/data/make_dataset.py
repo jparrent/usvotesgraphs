@@ -6,6 +6,7 @@ import logging
 from dotenv import find_dotenv, load_dotenv
 import glob2
 import json
+from collections import OrderedDict
 
 _ROOT = str(Path(os.getcwd()).parents[1])
 _RAW_DATA_PATH = os.path.join(_ROOT, 'data/raw/')
@@ -18,7 +19,7 @@ class Congress:
 
         self.session_number = session_number
         self.input_filepath = os.path.join(_RAW_DATA_PATH, self.session_number)
-        self.measures_voted_on = []
+        self.measures_voted_on = {}
         self.records = Records()
 
     def get_measures_voted_on(self):
@@ -33,11 +34,12 @@ class Congress:
             measure = data['vote_id']
             result = data['result']
 
-            self.measures_voted_on.append((vote_date, measure, result))
+            self.measures_voted_on[measure] = {'date': vote_date, 'result': result}
             yea_votes, nay_votes = self.records.filter_abstaining_votes(data)
             self.records.build_vote_records(yea_votes, nay_votes, measure)
 
-        self.measures_voted_on.sort(key=lambda tup: tup[0])
+        self.measures_voted_on = OrderedDict(
+            sorted(self.measures_voted_on.iteritems(), key=lambda x: x[1]['date']))
 
         return self.measures_voted_on
 
@@ -116,23 +118,38 @@ class Records:
 class Dataset:
 
     def __init__(self):
+
         pass
 
-    # def construct(self, measures_voted_on, voting_records):
-    #     # for i in measures_voted_on:
-    #     #     print i, '\n'
-    #     for tup in measures_voted_on:
-    #
-    #         measure = tup[1]
-    #
-    #         for rep in voting_records.keys():
-    #
-    #             if
-    #
-    #             voting_records[rep]['votes']
+    # // TODO Finish the following construct function
+    # now that I can access votes with voting_records[rep]['votes'][measure]
 
+    def construct(self, measures_voted_on, voting_records):
 
-# [tup[1] for tup in voting_records[rep]['votes'] for rep in voting_records.keys() if tup[0] in ...]
+        for rep in voting_records.keys():
+
+            for measure in measures_voted_on:
+
+                if voting_records[rep]['votes'][measure]:
+
+                    pass
+
+                else:
+
+                    pass
+
+        # def construct(self, measures_voted_on, voting_records):
+        #     # for i in measures_voted_on:
+        #     #     print i, '\n'
+        #     for tup in measures_voted_on:
+        #
+        #         measure = tup[1]
+        #
+        #         for rep in voting_records.keys():
+        #
+        #             if
+        #
+        #             voting_records[rep]['votes']
 
         # pd.DataFrame(data=data[1:,1:],    # values
         #             index=data[1:,0],    # 1st column as index
@@ -140,8 +157,6 @@ class Dataset:
 
 
 @click.command()
-# @click.argument('input_filepath', type=click.Path(exists=True))
-# @click.argument('output_filepath', type=click.Path())
 @click.argument('session_number')
 def main(session_number):
     """ Runs data processing scripts to turn raw data from (../raw) into
@@ -158,11 +173,13 @@ def main(session_number):
 
     # retreive congressional vote dictionary
     records = congress.records
-    records.show_records()
+    # records.show_records()
 
     # create dataframe
     # rows are congress people
     # columns are measures voted on, ordered by vote_id
+
+    # // TODO Uncomment when ready.
     # dataset = Dataset()
     # dataset.construct(measures_voted_on, records)
 
