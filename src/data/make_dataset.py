@@ -3,16 +3,17 @@ import os
 from pathlib import Path
 import click
 import logging
-# from dotenv import find_dotenv, load_dotenv
 import glob2
 import json
 from collections import OrderedDict
 import numpy as np
 import pandas as pd
+# from dotenv import find_dotenv, load_dotenv
+
 
 _ROOT = str(Path(os.getcwd()).parents[1])
 _RAW_DATA_PATH = os.path.join(_ROOT, 'data/raw/')
-test_input_filepath = os.path.join(_RAW_DATA_PATH, '113')
+_PROCESSED_DATA_PATH = os.path.join(_ROOT, 'data/processed/')
 
 
 class Congress:
@@ -53,7 +54,7 @@ class Congress:
         self.measures_voted_on = OrderedDict(
             sorted(self.measures_voted_on.iteritems(), key=lambda x: x[1]['date']))
 
-        return self.measures_voted_on
+        return self.measures_voted_on, self.records.records
 
 
 class Records:
@@ -117,7 +118,7 @@ class Records:
 
             for record in yes_votes:
 
-                name = record['display_name']
+                name = record['display_name'].split(' ')[0].strip(',')
                 congress_id = record['id']
                 party = record['party']
                 state = record['state']
@@ -129,7 +130,7 @@ class Records:
 
             for record in no_votes:
 
-                name = record['display_name']
+                name = record['display_name'].split(' ')[0].strip(',')
                 congress_id = record['id']
                 party = record['party']
                 state = record['state']
@@ -139,19 +140,26 @@ class Records:
 
 
 class Dataset:
+    """This class serves to deliver a pandas dataframe of vote information,
+    where each row is the Congressman's name, party, state, and the span
+    of votes.
+    """
 
     def __init__(self):
 
         self.rows = []
 
-    # // TODO Finish the following construct function
-    # now that I can access votes with voting_records[rep]['votes'][measure]
+    def output_to_file(self, session, dataframe):
+
+        filehandle = '_'.join([str(session), 'dataframe.csv'])
+        out_file = os.path.join(_PROCESSED_DATA_PATH, filehandle)
+        dataframe.to_csv(out_file, encoding='utf-8')
 
     def construct(self, measures_voted_on, voting_records):
 
         for rep in voting_records.keys():
 
-            row = [rep]
+            row = [rep, voting_records[rep]['party'], voting_records[rep]['state']]
 
             for measure in measures_voted_on:
 
@@ -161,13 +169,15 @@ class Dataset:
 
                 except KeyError:
 
-                    row.append(np.nan)
+                    # row.append(np.nan)
+                    row.append(-1.0)
 
             self.rows.append(row)
 
-        return pd.DataFrame(data=self.rows)   # values
-        # index=self.rows[0:, 0])    # 1st column as index
-        #   columns=rows[0,1:])  # 1st row as the column names
+        columns = ['Name', 'Party', 'State'] + measures_voted_on.keys()
+        df = pd.DataFrame(data=self.rows, columns=columns)
+        df = df.set_index('Name')
+        return df
 
 
 @click.command()
@@ -182,24 +192,15 @@ def main(session_number):
     # create congress for a given session, e.g., 113th congress
     congress = Congress(session_number)
 
-    # retreive list of tuples of vote measure metadata
-    measures_voted_on = congress.get_measures_voted_on()
+    # retreive vote/measure metadata and Congressional records
+    measures_voted_on, records = congress.get_measures_voted_on()
 
-    # retreive congressional vote dictionary
-    records = congress.records.records
-    # print len(records)
-    # print len(measures_voted_on)
+    """Create a dataframe where rows are congress people and columns are
+    measures voted on, ordered by vote_id.
+    """
     dataframe = Dataset().construct(measures_voted_on, records)
-    print dataframe
-    # records.show_records()
-
-    # create dataframe
-    # rows are congress people
-    # columns are measures voted on, ordered by vote_id
-
-    # // TODO Uncomment when ready.
-    # dataset = Dataset()
-    # dataset.construct(measures_voted_on, records)
+    Dataset().output_to_file(session_number, dataframe)
+    print dataframe.head()
 
 
 if __name__ == '__main__':
