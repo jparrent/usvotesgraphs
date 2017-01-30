@@ -1,4 +1,10 @@
 # -*- coding: utf-8 -*-
+
+"""
+make_dataset.py
+---------------------
+Functions for creating a dataframe of metadata and votes per representative.
+"""
 import os
 from pathlib import Path
 import click
@@ -25,7 +31,6 @@ class Congress:
             "result"
          },
     }
-
     """
 
     def __init__(self, session_number):
@@ -36,6 +41,9 @@ class Congress:
         self.records = Records()
 
     def get_measures_voted_on(self):
+        """This function parses all .json files in ../../data/raw/ and returns
+        a dict of measures voted on, sorted by the date of each measure.
+        """
 
         for filename in glob2.iglob(self.input_filepath + '/**/*.json'):
 
@@ -73,12 +81,19 @@ class Records:
     def __init__(self):
         self.records = {}
 
-    def show_records(self):
+    def display(self):
+        """Terse method used for inspecting vote counts.
+        """
+
         for k, v in self.records.iteritems():
             print k, v, '\n'
             print len(v['votes']), '\n'
 
     def update_congressman(self, name, congress_id, party, state, measure, vote):
+        """This function is called by build_vote_records to construct the
+        records dict per congressman.
+        """
+
         try:
             self.records[name]['votes'][measure] = vote
 
@@ -88,6 +103,9 @@ class Records:
             self.records[name] = record
 
     def filter_abstaining_votes(self, data):
+        """Given the initial raw data (.json files), this function is used to
+        pass over measures where 'yea' and 'nay' votes were not cast.
+        """
 
         if all(x in ['Present', 'Not Voting'] for x in data['votes'].keys()):
             pass
@@ -113,6 +131,9 @@ class Records:
         return yes_votes, no_votes
 
     def build_vote_records(self, yes_votes, no_votes, measure):
+        """Primary function to build the records dict per congressman. Makes
+        use of Records.update_congressman.
+        """
 
         if yes_votes:
 
@@ -149,13 +170,20 @@ class Dataset:
 
         self.rows = []
 
-    def output_to_file(self, session, dataframe):
+    def to_file(self, session, dataframe):
+        """Produces a human-readable csv file, saved in ../../data/processed/,
+        to be read by ../features/build_features.py.
+        """
 
         filehandle = '_'.join([str(session), 'dataframe.csv'])
         out_file = os.path.join(_PROCESSED_DATA_PATH, filehandle)
         dataframe.to_csv(out_file, encoding='utf-8')
 
     def construct(self, measures_voted_on, voting_records):
+        """Returns pandas dataframe object with the following form:
+        RepName     Party   State   Measure1    Measure2    Measure3    ...
+        Smith       D       CA      1           0           -1
+        """
 
         for rep in voting_records.keys():
 
@@ -170,6 +198,8 @@ class Dataset:
                 except KeyError:
 
                     # row.append(np.nan)
+                    # Currently passing -1 if no votes cast for the purposes
+                    # of exploratory data analysis.
                     row.append(-1.0)
 
             self.rows.append(row)
@@ -199,9 +229,7 @@ def main(session_number):
     measures voted on, ordered by vote_id.
     """
     dataframe = Dataset().construct(measures_voted_on, records)
-    Dataset().output_to_file(session_number, dataframe)
-    print dataframe.head()
-
+    Dataset().to_file(session_number, dataframe)
 
 if __name__ == '__main__':
     log_fmt = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
