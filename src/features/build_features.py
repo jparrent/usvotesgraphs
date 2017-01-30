@@ -1,20 +1,28 @@
 # -*- coding: utf-8 -*-
+
+"""
+build_features.py
+---------------------
+Functions for exploratory data analysis, e.g., feature engineering and
+dimensionality reduction.
+"""
 import os
 from pathlib import Path
 import click
 import logging
-import glob2
-import json
-from collections import OrderedDict
-import numpy as np
+# import glob2
+# import json
+# from collections import OrderedDict
+# import numpy as np
 import pandas as pd
 from sklearn.decomposition import TruncatedSVD
+from sklearn.manifold import TSNE
 
 _ROOT = str(Path(os.getcwd()).parents[1])
 _PROCESSED_DATA_PATH = os.path.join(_ROOT, 'data/processed/')
 
 
-class Dataset:
+class Features:
 
     def __init__(self, session_number):
 
@@ -39,8 +47,20 @@ def main(session_number):
     logger = logging.getLogger(__name__)
     logger.info('making final data set from raw data')
 
-    metadata, data = Dataset(session_number).load()
+    # Retreive Congressional metadata and vote data for transforming
+    metadata, data = Features(session_number).load()
+
+    # Transforming 1800+ features (measures/bills) to 50 features using
+    # truncated singular value decomposition (SVD)
     svd = TruncatedSVD(50)
+    transformed_data = svd.fit_transform(data)
+
+    # Building n-component t-distributed stochastic neighbor embedding (t-SNE)
+    t_SNE = TSNE(n_components=2, random_state=0)
+    np.set_printoptions(suppress=True)
+    model.fit_transform(transformed_data)
+
+    # // TODO plot results
 
 
 if __name__ == '__main__':
