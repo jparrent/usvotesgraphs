@@ -16,21 +16,6 @@ import numpy as np
 import pandas as pd
 
 
-class SystemPaths:
-
-    def __init__(self):
-
-        self._ROOT = str(Path(os.getcwd()).parents[1])
-        self._RAW_DATA_PATH = os.path.join(self._ROOT, 'data/raw/')
-        self._PROCESSED_DATA_PATH = os.path.join(self._ROOT, 'data/processed/')
-
-    def get_data_path(self, data_path):
-
-        if data_path.lower() == 'processed':
-            return self._PROCESSED_DATA_PATH
-        return self._RAW_DATA_PATH
-
-
 class Congress:
     """This class is used to build a dictionary of measures that have been
     voted on for a given congressional session:
@@ -44,7 +29,8 @@ class Congress:
 
     def __init__(self, session_number):
 
-        self._input_data_path = SystemPaths().get_data_path('raw')
+        self._ROOT = str(Path(os.getcwd()).parents[1])
+        self._input_data_path = os.path.join(self._ROOT, 'data/raw/')
         self.session_number = session_number
         self.input_filepath = os.path.join(self._input_data_path, self.session_number)
         self.measures_voted_on = {}
@@ -178,7 +164,8 @@ class Dataset:
 
     def __init__(self):
 
-        self._data_path = SystemPaths().get_data_path('processed')
+        self._ROOT = str(Path(os.getcwd()).parents[1])
+        self._data_path = os.path.join(self._ROOT, 'data/processed/')
         self._rows = []
 
     def to_file(self, session, dataframe):
