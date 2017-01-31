@@ -14,12 +14,21 @@ import json
 from collections import OrderedDict
 import numpy as np
 import pandas as pd
-# from dotenv import find_dotenv, load_dotenv
 
 
-_ROOT = str(Path(os.getcwd()).parents[1])
-_RAW_DATA_PATH = os.path.join(_ROOT, 'data/raw/')
-_PROCESSED_DATA_PATH = os.path.join(_ROOT, 'data/processed/')
+class SystemPaths:
+
+    def __init__(self):
+
+        self._ROOT = str(Path(os.getcwd()).parents[1])
+        self._RAW_DATA_PATH = os.path.join(self._ROOT, 'data/raw/')
+        self._PROCESSED_DATA_PATH = os.path.join(self._ROOT, 'data/processed/')
+
+    def get_data_path(self, data_path):
+
+        if data_path.lower() == 'processed':
+            return self._PROCESSED_DATA_PATH
+        return self._RAW_DATA_PATH
 
 
 class Congress:
@@ -35,10 +44,11 @@ class Congress:
 
     def __init__(self, session_number):
 
+        self._input_data_path = SystemPaths().get_data_path('raw')
         self.session_number = session_number
-        self.input_filepath = os.path.join(_RAW_DATA_PATH, self.session_number)
+        self.input_filepath = os.path.join(self._input_data_path, self.session_number)
         self.measures_voted_on = {}
-        self.records = Records()
+        self.Records = Records()
 
     def get_measures_voted_on(self):
         """This function parses all .json files in ../../data/raw/ and returns
@@ -51,18 +61,21 @@ class Congress:
 
                 data = json.load(jfile)
 
+            if all(x in ['Present', 'Not Voting'] for x in data['votes'].keys()):
+                continue
+
             vote_date = data['date']
             measure = data['vote_id']
             result = data['result']
 
             self.measures_voted_on[measure] = {'date': vote_date, 'result': result}
-            yea_votes, nay_votes = self.records.filter_abstaining_votes(data)
-            self.records.build_vote_records(yea_votes, nay_votes, measure)
+            yea_votes, nay_votes = self.Records.filter_abstaining_votes(data)
+            self.Records.build_vote_records(yea_votes, nay_votes, measure)
 
         self.measures_voted_on = OrderedDict(
             sorted(self.measures_voted_on.iteritems(), key=lambda x: x[1]['date']))
 
-        return self.measures_voted_on, self.records.records
+        return self.measures_voted_on, self.Records._records
 
 
 class Records:
@@ -79,13 +92,13 @@ class Records:
     """
 
     def __init__(self):
-        self.records = {}
+        self._records = {}
 
     def display(self):
-        """Terse method used for inspecting vote counts.
+        """Terse method used for inspecting components of the raw .jsons.
         """
 
-        for k, v in self.records.iteritems():
+        for k, v in self._records.iteritems():
             print k, v, '\n'
             print len(v['votes']), '\n'
 
@@ -95,20 +108,17 @@ class Records:
         """
 
         try:
-            self.records[name]['votes'][measure] = vote
+            self._records[name]['votes'][measure] = vote
 
         except KeyError:
             record = {'congress_id': congress_id,
                       'party': party, 'state': state, 'votes': {measure: vote}}
-            self.records[name] = record
+            self._records[name] = record
 
     def filter_abstaining_votes(self, data):
         """Given the initial raw data (.json files), this function is used to
         pass over measures where 'yea' and 'nay' votes were not cast.
         """
-
-        if all(x in ['Present', 'Not Voting'] for x in data['votes'].keys()):
-            pass
 
         try:
             yes_votes = data['votes']['Aye']
@@ -116,7 +126,6 @@ class Records:
             try:
                 yes_votes = data['votes']['Yea']
             except KeyError:
-                pass
                 yes_votes = []
 
         try:
@@ -125,39 +134,40 @@ class Records:
             try:
                 no_votes = data['votes']['Nay']
             except KeyError:
-                pass
                 no_votes = []
 
         return yes_votes, no_votes
 
+    def format_record_entry(self, measure, record, vote_cast):
+        """Used in the build_vote_records method depending on vote_cast.
+        """
+
+        name = record['display_name'].split(' ')[0].strip(',')
+        congress_id = record['id']
+        party = record['party']
+        state = record['state']
+        vote = vote_cast
+        self.update_congressman(
+            name, congress_id, party, state, measure, vote)
+
     def build_vote_records(self, yes_votes, no_votes, measure):
-        """Primary function to build the records dict per congressman. Makes
-        use of Records.update_congressman.
+        """Primary function used to build the records dict per congressman. Makes
+        use of Records.update_congressman and Records.format_record_entry.
         """
 
         if yes_votes:
 
             for record in yes_votes:
 
-                name = record['display_name'].split(' ')[0].strip(',')
-                congress_id = record['id']
-                party = record['party']
-                state = record['state']
                 vote = 1
-                self.update_congressman(
-                    name, congress_id, party, state, measure, vote)
+                self.format_record_entry(measure, record, vote)
 
         if no_votes:
 
             for record in no_votes:
 
-                name = record['display_name'].split(' ')[0].strip(',')
-                congress_id = record['id']
-                party = record['party']
-                state = record['state']
                 vote = 0
-                self.update_congressman(
-                    name, congress_id, party, state, measure, vote)
+                self.format_record_entry(measure, record, vote)
 
 
 class Dataset:
@@ -168,7 +178,8 @@ class Dataset:
 
     def __init__(self):
 
-        self.rows = []
+        self._data_path = SystemPaths().get_data_path('processed')
+        self._rows = []
 
     def to_file(self, session, dataframe):
         """Produces a human-readable csv file, saved in ../../data/processed/,
@@ -176,13 +187,15 @@ class Dataset:
         """
 
         filehandle = '_'.join([str(session), 'dataframe.csv'])
-        out_file = os.path.join(_PROCESSED_DATA_PATH, filehandle)
+        out_file = os.path.join(self._data_path, filehandle)
         dataframe.to_csv(out_file, encoding='utf-8')
 
     def construct(self, measures_voted_on, voting_records):
         """Returns pandas dataframe object with the following form:
         RepName     Party   State   Measure1    Measure2    Measure3    ...
         Smith       D       CA      1           0           -1
+
+        Note that currently a -1 is passed if a vote is not cast.
         """
 
         for rep in voting_records.keys():
@@ -197,15 +210,12 @@ class Dataset:
 
                 except KeyError:
 
-                    # row.append(np.nan)
-                    # Currently passing -1 if no votes cast for the purposes
-                    # of exploratory data analysis.
-                    row.append(-1.0)
+                    row.append(-1.0)  # row.append(np.nan)
 
-            self.rows.append(row)
+            self._rows.append(row)
 
         columns = ['Name', 'Party', 'State'] + measures_voted_on.keys()
-        df = pd.DataFrame(data=self.rows, columns=columns)
+        df = pd.DataFrame(data=self._rows, columns=columns)
         df = df.set_index('Name')
         return df
 
@@ -214,20 +224,18 @@ class Dataset:
 @click.argument('session_number')
 def main(session_number):
     """ Runs data processing scripts to turn raw data from (../raw) into
-        cleaned data ready to be analyzed (saved in ../processed).
+    cleaned data ready to be analyzed (saved in ../processed).
+
+    Finally, creates a dataframe where rows are congress people and columns are
+    measures voted on, ordered by vote_id.
     """
+
     logger = logging.getLogger(__name__)
     logger.info('making final data set from raw data')
 
-    # create congress for a given session, e.g., 113th congress
     congress = Congress(session_number)
-
-    # retreive vote/measure metadata and Congressional records
     measures_voted_on, records = congress.get_measures_voted_on()
 
-    """Create a dataframe where rows are congress people and columns are
-    measures voted on, ordered by vote_id.
-    """
     dataframe = Dataset().construct(measures_voted_on, records)
     Dataset().to_file(session_number, dataframe)
 
@@ -235,10 +243,8 @@ if __name__ == '__main__':
     log_fmt = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
     logging.basicConfig(level=logging.INFO, format=log_fmt)
 
-    # not used in this stub but often useful for finding various files
     project_dir = os.path.join(os.path.dirname(__file__), os.pardir, os.pardir)
 
-    # find .env automagically by walking up directories until it's found, then
     # load up the .env entries as environment variables
     # load_dotenv(find_dotenv())
 
