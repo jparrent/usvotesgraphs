@@ -53,10 +53,12 @@ class Congress:
             vote_date = data['date']
             measure = data['vote_id']
             result = data['result']
+            chamber = data['chamber']
 
-            self.measures_voted_on[measure] = {'date': vote_date, 'result': result}
+            self.measures_voted_on[measure] = {
+                'date': vote_date, 'result': result, 'chamber': chamber}
             yea_votes, nay_votes = self.Records.filter_abstaining_votes(data)
-            self.Records.build_vote_records(yea_votes, nay_votes, measure)
+            self.Records.build_vote_records(yea_votes, nay_votes, measure, chamber)
 
         self.measures_voted_on = OrderedDict(
             sorted(self.measures_voted_on.iteritems(), key=lambda x: x[1]['date']))
@@ -71,7 +73,8 @@ class Records:
         "name": {
             "congress_id",
             "party",
-            "state"
+            "chamber",
+            "state",
             "votes": {"measure": vote (1 yea, 0 nay)}
          },
     }
@@ -88,7 +91,7 @@ class Records:
             print k, v, '\n'
             print len(v['votes']), '\n'
 
-    def update_congressman(self, name, congress_id, party, state, measure, vote):
+    def update_congressman(self, name, congress_id, chamber, party, state, measure, vote):
         """This function is called by build_vote_records to construct the
         records dict per congressman.
         """
@@ -97,7 +100,7 @@ class Records:
             self._records[name]['votes'][measure] = vote
 
         except KeyError:
-            record = {'congress_id': congress_id,
+            record = {'congress_id': congress_id, 'chamber': chamber,
                       'party': party, 'state': state, 'votes': {measure: vote}}
             self._records[name] = record
 
@@ -124,7 +127,7 @@ class Records:
 
         return yes_votes, no_votes
 
-    def format_record_entry(self, measure, record, vote_cast):
+    def format_record_entry(self, measure, record, vote_cast, chamber):
         """Used in the build_vote_records method depending on vote_cast.
         """
 
@@ -134,9 +137,9 @@ class Records:
         state = record['state']
         vote = vote_cast
         self.update_congressman(
-            name, congress_id, party, state, measure, vote)
+            name, congress_id, chamber, party, state, measure, vote)
 
-    def build_vote_records(self, yes_votes, no_votes, measure):
+    def build_vote_records(self, yes_votes, no_votes, measure, chamber):
         """Primary function used to build the records dict per congressman. Makes
         use of Records.update_congressman and Records.format_record_entry.
         """
@@ -146,14 +149,14 @@ class Records:
             for record in yes_votes:
 
                 vote = 1
-                self.format_record_entry(measure, record, vote)
+                self.format_record_entry(measure, record, vote, chamber)
 
         if no_votes:
 
             for record in no_votes:
 
                 vote = 0
-                self.format_record_entry(measure, record, vote)
+                self.format_record_entry(measure, record, vote, chamber)
 
 
 class Dataset:
@@ -179,15 +182,16 @@ class Dataset:
 
     def construct(self, measures_voted_on, voting_records):
         """Returns pandas dataframe object with the following form:
-        RepName     Party   State   Measure1    Measure2    Measure3    ...
-        Smith       D       CA      1           0           -1
+        RepName     Party   State   Chamber     Measure1    Measure2    ...
+        Smith       D       CA      s           1           0
 
         Note that currently a -1 is passed if a vote is not cast.
         """
 
         for rep in voting_records.keys():
 
-            row = [rep, voting_records[rep]['party'], voting_records[rep]['state']]
+            row = [rep, voting_records[rep]['party'], voting_records[
+                rep]['state'], voting_records[rep]['chamber']]
 
             for measure in measures_voted_on:
 
@@ -201,7 +205,7 @@ class Dataset:
 
             self._rows.append(row)
 
-        columns = ['Name', 'Party', 'State'] + measures_voted_on.keys()
+        columns = ['Name', 'Party', 'State', 'Chamber'] + measures_voted_on.keys()
         df = pd.DataFrame(data=self._rows, columns=columns)
         df = df.set_index('Name')
         return df
@@ -231,8 +235,5 @@ if __name__ == '__main__':
     logging.basicConfig(level=logging.INFO, format=log_fmt)
 
     project_dir = os.path.join(os.path.dirname(__file__), os.pardir, os.pardir)
-
-    # load up the .env entries as environment variables
-    # load_dotenv(find_dotenv())
 
     main()
