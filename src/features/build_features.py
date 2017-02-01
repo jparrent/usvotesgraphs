@@ -37,11 +37,12 @@ class Features:
         df = self._data.set_index('Name')
         cols = df.columns.tolist()[2:]
         # metadata = self._data[['Name', 'Party', 'State']].values
+        names = df.index.values
         y_labels = df['Party'].values
         X_data = df[cols].values
-        return y_labels, X_data
+        return names, y_labels, X_data
 
-    def plot_2D_tSNE(self, labels, data, n_features_SVD=50):
+    def plot_2D_tSNE(self, names, labels, data, congressman=[], n_features_SVD=50):
         """Transform 1800+ features (measures/bills) to 50 features using
         truncated singular value decomposition (SVD). This is followed by
         creating a t-distributed stochastic neighbor embedding (t-SNE), and
@@ -56,12 +57,52 @@ class Features:
         np.set_printoptions(suppress=True)
         X_tSNE = t_SNE.fit_transform(X_trunc)
 
-        vis_x = X_tSNE[:, 0]
-        vis_y = X_tSNE[:, 1]
+        dems_idx = [i for i, v in enumerate(labels) if v == 'D']
+        vis_x_dems = [X_tSNE[i, 0] for i in dems_idx]
+        vis_y_dems = [X_tSNE[i, 1] for i in dems_idx]
 
-        colors = [0 if v == 'D' else 1 if v == 'R' else 2 for v in labels.tolist()]
+        reps_idx = [i for i, v in enumerate(labels) if v == 'R']
+        vis_x_reps = [X_tSNE[i, 0] for i in reps_idx]
+        vis_y_reps = [X_tSNE[i, 1] for i in reps_idx]
 
-        plt.scatter(vis_x, vis_y, c=colors, cmap=plt.cm.brg)
+        inds_idx = [i for i, v in enumerate(labels) if v == 'I']
+        vis_x_inds = [X_tSNE[i, 0] for i in inds_idx]
+        vis_y_inds = [X_tSNE[i, 1] for i in inds_idx]
+
+        colors = ['b', 'r', 'm']
+        legend_labels = ['Dem', 'Reb', 'Ind']
+
+        Dems = plt.scatter(vis_x_dems, vis_y_dems, c=colors[0], alpha=0.5)
+        Reps = plt.scatter(vis_x_reps, vis_y_reps, c=colors[1], alpha=0.5)
+        Inds = plt.scatter(vis_x_inds, vis_y_inds, c=colors[2], alpha=0.5)
+
+        legend_groups = [Dems, Reps, Inds]
+
+        if congressman:
+
+            markers = ['*', '+', 'x', '^', 'v', '<', '>', 'D']
+
+            for p, person in enumerate(congressman):
+
+                idx = [i for i, v in enumerate(names) if v.lower() == person.lower()]
+                vis_x = [X_tSNE[i, 0] for i in idx]
+                vis_y = [X_tSNE[i, 1] for i in idx]
+
+                point = plt.scatter(vis_x, vis_y, s=75, marker=markers[p], c='black')
+                legend_labels.append(person)
+                legend_groups.append(point)
+
+        plt.legend(legend_groups,
+                   legend_labels,
+                   scatterpoints=1,
+                   loc='upper center',
+                   bbox_to_anchor=(0.5, 1.14),
+                   fancybox=True,
+                   shadow=True,
+                   borderaxespad=0.,
+                   ncol=5,
+                   fontsize=10)
+
         plt.show()
 
 
@@ -74,8 +115,15 @@ def main(session_number):
     logger.info('making final data set from raw data')
 
     congressional_features = Features(session_number)
-    y_labels, X_data = congressional_features.load()
-    congressional_features.plot_2D_tSNE(y_labels, X_data)
+    names, y_labels, X_data = congressional_features.load()
+    congressmen = ['Sanders',
+                   'Reid',
+                   'McConnell',
+                   'Boehner',
+                   'Pelosi',
+                   'Cantor',
+                   'Wasserman']
+    congressional_features.plot_2D_tSNE(names, y_labels, X_data, congressmen)
 
 
 if __name__ == '__main__':
