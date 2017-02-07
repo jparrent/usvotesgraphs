@@ -102,16 +102,17 @@ class Features(Dataset):
 ------------
 ## 2. Data to Visual Pipeline:
 
-Given the data in `data/processed`, the `src/data/build_features.py` module is currently used
-to generate an exploratory 2-dimensional t-SNE plot.
+Currently there are only two scripts for this project, `src/data/make_dataset.py` and `src/features/build_features.py`. The Dataset class in make_dataset.py processes the raw .json data in `src/data/raw/` and outputs .csv files to `data/processed/`. The end product is effectively a spreadsheet of congressional members (rows) and their votes cast on more than 1800 measures/bills (columns). Yea, Nay, and Abstain votes are represented as 1, 0, and -1, respectively. Some additional metadata about each member is also saved, namely their Party and State.
 
-[Under construction]
+Given the data in `data/processed/`, the Features class in the build_features.py module is then used
+to generate an exploratory 2-dimensional t-SNE plot using scikit-learn and matplotlib. To suppress noise and decrease computation time for t-SNE, I have utilized another of scikit-learn's tools, Truncated Singular Value Decomposition (SVD) to reduce the number of features (bills) from 1800+ to a representative set of 50 features. 
 
 ------------
 ## 3. Latest Graphs:
 
-[Under construction]
+The transformations applied to the processed data have not yet been tuned, but are simply 'out of the box' implementations of both t-SNE and TruncatedSVD. It is also worth noting that [t-SNE plots can be misleading](http://distill.pub/2016/misread-tsne/), and in my opinion are best served as an animated series of iterations. That said, let's see the first graph from USVotesGraphs.
 
+![t-SNE of US Congressional Votes for the 113th Session](https://github.com/jparrent/usvotesgraphs/blob/master/src/features/senate_house_tSNE_SVD50_StandardScaler_20170202.png)
 ------------
 4. Project Organization
 
