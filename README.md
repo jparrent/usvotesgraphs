@@ -112,7 +112,14 @@ to generate an exploratory 2-dimensional t-SNE plot using scikit-learn and matpl
 
 The transformations applied to the processed data have not yet been tuned, but are simply 'out of the box' implementations of both t-SNE and TruncatedSVD. It is also worth noting that [t-SNE plots can be misleading](http://distill.pub/2016/misread-tsne/), and in my opinion are best served as an animated series of iterations. That said, let's see the first graph from USVotesGraphs.
 
+<p align="center">
+	<img src='https://github.com/jparrent/usvotesgraphs/blob/master/src/features/senate_house_tSNE_SVD50_StandardScaler_20170202.png'/>
 ![t-SNE of US Congressional Votes for the 113th Session](https://github.com/jparrent/usvotesgraphs/blob/master/src/features/senate_house_tSNE_SVD50_StandardScaler_20170202.png)
+</p>
+
+<p align="center">
+  <img src="https://github.com/jparrent/usvotesgraphs/blob/master/src/features/senate_house_tSNE_SVD50_StandardScaler_20170202.png" alt="t-SNE of US Congressional Votes for the 113th Session"/>
+</p>
 ------------
 4. Project Organization
 
