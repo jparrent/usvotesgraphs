@@ -136,20 +136,18 @@ These and other points will be revisited and updated soon.
 <a id='Organization'></a>
 ## 4. Project Organization
 
-[Under construction]
-
     ├── LICENSE
-    ├── Makefile           <- Makefile with commands like `make data` or `make train`
+    ├── Makefile           <- Makefile with commands like `make data` or `make train` (currently not in use)
     ├── README.md          <- The top-level README for developers using this project.
     ├── data
     │   ├── processed      <- The final, canonical data sets for modeling.
     │   └── raw            <- The original .json data from www.govtrack.us.
     │
-    ├── docs               <- A default Sphinx project; see sphinx-doc.org for details
+    ├── docs               <- A default Sphinx project; see sphinx-doc.org for details (currently empty)
     │
-    ├── models             <- Trained and serialized models, model predictions, or model summaries
+    ├── models             <- Trained and serialized models, model predictions, or model summaries (empty)
     │
-    ├── reports            <- Generated analysis as HTML, PDF, LaTeX, etc.
+    ├── reports            <- Generated analysis as HTML, PDF, LaTeX, etc. (empty)
     │   └── figures        <- Generated graphics and figures to be used in reporting
     │
     ├── requirements.txt   <- The requirements file for reproducing the analysis environment, e.g.
@@ -166,11 +164,11 @@ These and other points will be revisited and updated soon.
     │   │
     │   ├── models         <- Scripts to train models and then use trained models to make
     │   │   │                 predictions
-    │   │   ├── predict_model.py (currently empty)
-    │   │   └── train_model.py (currently empty)
+    │   │   ├── predict_model.py (empty)
+    │   │   └── train_model.py (empty)
     │   │
     │   └── visualization  <- Scripts to create exploratory and results oriented visualizations
-    │       └── visualize.py (currently empty)
+    │       └── visualize.py (empty)
     │
     └── tox.ini            <- tox file with settings for running tox; see tox.testrun.org
 
