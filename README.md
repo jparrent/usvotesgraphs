@@ -15,7 +15,7 @@ USVotesGraphs is a package that provides a visual report on the voting history o
 ------------
 ## 1. OOP & Classes (abridged)
 
-### 1.1 Why do Data Science with Classes
+### 1.1 Why do Data Science with Classes?
 
 More often than not, data scientits need to write one-off, bare-bones scripts to accomplish a specific or 
 time-sensitive task. In order to add more functionality, refactoring the code is usually needed, particularly when the scripts are old. I have found it incredibly beneficial to start a project as close to a well-organized state as possible, and in terms of both setting up project directories and defining functions within a set of classes:
