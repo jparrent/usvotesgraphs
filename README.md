@@ -121,50 +121,49 @@ The transformations applied to the processed data have not yet been tuned, but a
 
 [Under construction]
 
-
-    &#9500;&#9472;&#9472; LICENSE
-    &#9500;&#9472;&#9472; Makefile           <- Makefile with commands like `make data` or `make train`
-    &#9500;&#9472;&#9472; README.md          <- The top-level README for developers using this project.
-    &#9500;&#9472;&#9472; data
-    &#9474;   &#9500;&#9472;&#9472; external       <- Data from third party sources.
-    &#9474;   &#9500;&#9472;&#9472; interim        <- Intermediate data that has been transformed.
-    &#9474;   &#9500;&#9472;&#9472; processed      <- The final, canonical data sets for modeling.
-    &#9474;   &#9492;&#9472;&#9472; raw            <- The original, immutable data dump.
-    &#9474;
-    &#9500;&#9472;&#9472; docs               <- A default Sphinx project; see sphinx-doc.org for details
-    &#9474;
-    &#9500;&#9472;&#9472; models             <- Trained and serialized models, model predictions, or model summaries
-    &#9474;
-    &#9500;&#9472;&#9472; notebooks          <- Jupyter notebooks. Naming convention is a number (for ordering),
-    &#9474;                         the creator's initials, and a short `-` delimited description, e.g.
-    &#9474;                         `1.0-jqp-initial-data-exploration`.
-    &#9474;
-    &#9500;&#9472;&#9472; references         <- Data dictionaries, manuals, and all other explanatory materials.
-    &#9474;
-    &#9500;&#9472;&#9472; reports            <- Generated analysis as HTML, PDF, LaTeX, etc.
-    &#9474;   &#9492;&#9472;&#9472; figures        <- Generated graphics and figures to be used in reporting
-    &#9474;
-    &#9500;&#9472;&#9472; requirements.txt   <- The requirements file for reproducing the analysis environment, e.g.
-    &#9474;                         generated with `pip freeze > requirements.txt`
-    &#9474;
-    &#9500;&#9472;&#9472; src                <- Source code for use in this project.
-    &#9474;   &#9500;&#9472;&#9472; __init__.py    <- Makes src a Python module
-    &#9474;   &#9474;
-    &#9474;   &#9500;&#9472;&#9472; data           <- Scripts to download or generate data
-    &#9474;   &#9474;   &#9492;&#9472;&#9472; make_dataset.py
-    &#9474;   &#9474;
-    &#9474;   &#9500;&#9472;&#9472; features       <- Scripts to turn raw data into features for modeling
-    &#9474;   &#9474;   &#9492;&#9472;&#9472; build_features.py
-    &#9474;   &#9474;
-    &#9474;   &#9500;&#9472;&#9472; models         <- Scripts to train models and then use trained models to make
-    &#9474;   &#9474;   &#9474;                 predictions
-    &#9474;   &#9474;   &#9500;&#9472;&#9472; predict_model.py
-    &#9474;   &#9474;   &#9492;&#9472;&#9472; train_model.py
-    &#9474;   &#9474;
-    &#9474;   &#9492;&#9472;&#9472; visualization  <- Scripts to create exploratory and results oriented visualizations
-    &#9474;       &#9492;&#9472;&#9472; visualize.py
-    &#9474;
-    &#9492;&#9472;&#9472; tox.ini            <- tox file with settings for running tox; see tox.testrun.org
+    ├── LICENSE
+    ├── Makefile           <- Makefile with commands like `make data` or `make train`
+    ├── README.md          <- The top-level README for developers using this project.
+    ├── data
+    │   ├── external       <- Data from third party sources.
+    │   ├── interim        <- Intermediate data that has been transformed.
+    │   ├── processed      <- The final, canonical data sets for modeling.
+    │   └── raw            <- The original, immutable data dump.
+    │
+    ├── docs               <- A default Sphinx project; see sphinx-doc.org for details
+    │
+    ├── models             <- Trained and serialized models, model predictions, or model summaries
+    │
+    ├── notebooks          <- Jupyter notebooks. Naming convention is a number (for ordering),
+    │                         the creator's initials, and a short `-` delimited description, e.g.
+    │                         `1.0-jqp-initial-data-exploration`.
+    │
+    ├── references         <- Data dictionaries, manuals, and all other explanatory materials.
+    │
+    ├── reports            <- Generated analysis as HTML, PDF, LaTeX, etc.
+    │   └── figures        <- Generated graphics and figures to be used in reporting
+    │
+    ├── requirements.txt   <- The requirements file for reproducing the analysis environment, e.g.
+    │                         generated with `pip freeze > requirements.txt`
+    │
+    ├── src                <- Source code for use in this project.
+    │   ├── __init__.py    <- Makes src a Python module
+    │   │
+    │   ├── data           <- Scripts to download or generate data
+    │   │   └── make_dataset.py
+    │   │
+    │   ├── features       <- Scripts to turn raw data into features for modeling
+    │   │   └── build_features.py
+    │   │
+    │   ├── models         <- Scripts to train models and then use trained models to make
+    │   │   │                 predictions
+    │   │   ├── predict_model.py
+    │   │   └── train_model.py
+    │   │
+    │   └── visualization  <- Scripts to create exploratory and results oriented visualizations
+    │       └── visualize.py
+    │
+    └── tox.ini            <- tox file with settings for running tox; see tox.testrun.org
 
 
 --------
