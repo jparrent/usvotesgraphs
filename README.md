@@ -105,7 +105,9 @@ class Features(Dataset):
 Currently there are only two scripts for this project, `src/data/make_dataset.py` and `src/features/build_features.py`. The Dataset class in make_dataset.py processes the raw .json data in `src/data/raw/` and outputs .csv files to `data/processed/`. The end product is effectively a spreadsheet of congressional members (rows) and their votes cast on more than 1800 measures/bills (columns). Yea, Nay, and Abstain votes are represented as 1, 0, and -1, respectively. Some additional metadata about each member is also saved, namely their Party and State.
 
 Given the data in `data/processed/`, the Features class in the build_features.py module is then used
-to generate an exploratory 2-dimensional t-SNE plot using scikit-learn and matplotlib. To suppress noise and decrease computation time for t-SNE, I have utilized another of scikit-learn's tools, Truncated Singular Value Decomposition (SVD) to reduce the number of features (bills) from 1800+ to a representative set of 50 features. 
+to generate an exploratory 2-dimensional t-SNE plot using scikit-learn and matplotlib. To suppress noise and decrease computation time for t-SNE, I have utilized another of scikit-learn's tools, Truncated Singular Value Decomposition (SVD) to reduce the number of features (bills) from 1800+ to a representative set of 50 features.
+
+To plot both the Senate and House separately on similar scales, which separately vote on a different set of measures, I have opted toward using either StandScalar or RobustScaler from scikit-learn. To see what it looks like when both the Senate and House are treated as one body, see [here](https://github.com/jparrent/usvotesgraphs/blob/master/src/features/All_Congress_tSNE_SVD50_20170201.png).
 
 ------------
 ## 3. Latest Graphs:
@@ -113,8 +115,20 @@ to generate an exploratory 2-dimensional t-SNE plot using scikit-learn and matpl
 The transformations applied to the processed data have not yet been tuned, but are simply 'out of the box' implementations of both t-SNE and TruncatedSVD. It is also worth noting that [t-SNE plots can be misleading](http://distill.pub/2016/misread-tsne/), and in my opinion are best served as an animated series of iterations. That said, let's see the first graph from USVotesGraphs.
 
 <p align="center">
-  <img src="https://github.com/jparrent/usvotesgraphs/blob/master/src/features/senate_house_tSNE_SVD50_StandardScaler_20170202.png" alt="t-SNE of US Congressional Votes for the 113th Session"/>
+  <img src="https://github.com/jparrent/usvotesgraphs/blob/master/src/features/senate_house_tSNE_SVD50_RobustScaler_20170202.png" alt="t-SNE of US Congressional Votes for the 113th Session"/>
 </p>
+
+Pending further tuning and the creation of an animated series of t-SNE iterations, below are some take away points about the 113th session of Congress (2013-2015):
+
+* The Senate is not nearly as polarized as the House.
+
+* The description, 'Mainstream', is accurate for, e.g., Senators Reid (D) and McConnell (R), and Representatives Cantor (R), Pelosi (D), and Wasserman-Schultz (D). 
+
+* Senator Sanders (I) is an outlier for both parties in the Senate.
+
+* Represenative Boehner (R), then House Minority Leader, is an outlier from the Republican party. This could possibly reflect [tumultuous relations between him and the 'Freedom Caucus'](http://www.newyorker.com/magazine/2015/12/14/a-house-divided) (R) at the time. It is unclear if the stream of points Boehner is neighbors with is artifical; this may be due to too many features given to t-SNE (re: 50), or [may disappear upon additional iterations](http://distill.pub/2016/misread-tsne/). Similarly, it is unclear if the Freedom Caucus is a part of the right-most cluster of Reps and Dems in the House. 
+
+These and other points will be revisited and updated soon. 
 
 ------------
 ## 4. Project Organization
