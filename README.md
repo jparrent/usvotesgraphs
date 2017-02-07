@@ -65,7 +65,7 @@ if __name__ == '__main__':
 
 Here we have the definition of a class, or a template for creating 'instances' of objects, followed by the primary instructions in `main()`. This is an example format that will likely keep the project well-organized over time. And with only four methods to build out, this class already has most everything a data scientist frequently uses when handling data.
 
-The `__init__` is a special method that is used to initialize variables. You can also think about it as a method that stores whatever it is you need to keep track of, e.g., the data, today's date, or to call another method.
+The `__init__` is a special method that is used to initialize variables. You think of it as a method that stores whatever it is you need to keep track of, e.g., the data, today's date, or to call another method.
 
 What is `self`? This is how to generalize a class's methods and attributes so that one instance of that class does not affect a separate instance. A class's method needs to be passed `self`, i.e. `def load(self, *args, **kwargs):`, to point to the instance when called via `data = Dataset.load(*args, **kwargs)`. And if you want to use a class's methods or attributes within the class itself, prepend `self.` to that method or attribute.
 
