@@ -75,7 +75,7 @@ What are `*args` and `**kwargs`? This is how Python 'unpacks' a sequence of argu
 
 ### 1.3 Guiding Principles
 
-So how does all this explain 
+[Under construction]
 
 ------------
 ## 2. Data Pipeline:
@@ -84,14 +84,20 @@ So how does all this explain
 Given the data in `data/processed`, the `src/data/build_features.py` module is currently used
 to generate an exploratory 2-dimensional t-SNE plot.
 
+[Under construction]
+
 ------------
 ## 3. Latest Visuals:
 ------------
 
-There are several things to note:
+[Under construction]
+
 ------------
 4. Project Organization
 ------------
+
+[Under construction]
+
 
     ├── LICENSE
     ├── Makefile           <- Makefile with commands like `make data` or `make train`
