@@ -19,7 +19,7 @@ USVotesGraphs is a package that provides a visual report on the voting history o
 ### 1.1 Why do Data Science with Classes
 
 More often than not, data scientits need to write one-off, barebones scripts to accomplish a specific or 
-time-sensitive task. In order to add more functionality, refactoring the code is usually needed, particularly when the scripts are old. So, I have found it most useful to start a project as close to a well-orgaized state as possible, and in terms of both setting up project directories and defining functions:
+time-sensitive task. In order to add more functionality, refactoring the code is usually needed, particularly when the scripts are old. I have found it most useful to start a project as close to a well-orgaized state as possible, and in terms of both setting up project directories and defining functions within a set of classes:
 
 * organize a directory tree before coding anything (optional: [cookie-cutter](https://github.com/audreyr/cookiecutter))
 
@@ -66,11 +66,11 @@ if __name__ == '__main__':
 
 Here we have the definition of a class, or a template for creating 'instances' of objects. This is also how the project will stay organized. And with only four methods to build out, this class already has most everything a data scientist frequently uses when handling data.
 
-The `__init__` is a special method that is used to initialize variables. You can also think about it as a method that stores whatever it is you need to keep track of, e.g., the data, today's date, or call another method.
+The `__init__` is a special method that is used to initialize variables. You can also think about it as a method that stores whatever it is you need to keep track of, e.g., the data, today's date, or to call another method.
 
-What is `self`? This is how to generalize a class's methods so that one instance of that class does not affect a separate instance. A class's method needs to be passed `self`, i.e. `load(self, *args, **kwargs)`, to point to the instance when called via `Dataset.load(*args, **kwargs)`. And if you want to use a class's methods or attributes within the class itself, prepend `self.` to that method or attribute.
+What is `self`? This is how to generalize a class's methods and attributes so that one instance of that class does not affect a separate instance. A class's method needs to be passed `self`, i.e. `def load(self, *args, **kwargs):`, to point to the instance when called via `data = Dataset.load(*args, **kwargs)`. And if you want to use a class's methods or attributes within the class itself, prepend `self.` to that method or attribute.
 
-What are `*args` and `**kwargs`? This is how Python 'unpacks' a sequence of arguments and a dictionary of keyword arguments, respectively. You can think of them as placeholders until you figure out what variables you are going to pass -- you can also leave them as is and handle within the method. 
+What are `*args` and `**kwargs`? This is how Python 'unpacks' a sequence of arguments and a dictionary of keyword arguments, respectively. You can think of them as placeholders until you figure out what variables you are going to pass -- you can also leave them as is and handle within the method definition. 
 
 
 ### 1.3 Guiding Principles
