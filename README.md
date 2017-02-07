@@ -80,7 +80,7 @@ What are `*args` and `**kwargs`? This is how Python 'unpacks' a sequence of argu
 
 **Inheritance** - One class can inherit all methods and attributes from one or more classes if so desired. 
 
-**Polymorphism** - Say you have a Dataset class representing actions to be done on the raw and processed data, and a separate Features class which has the sole purpose of feature engineering and some exploratory plotting functionalities. Between the two classes, you may want to load a file in similar but slightly different ways. To save on scripting, you could accomplish this by having Features inherit the `load()` method from Dataset and modify it in Features:
+**Polymorphism** - Say you have a Dataset class representing actions to be done on the raw and processed data, and a separate Features class which has the sole purpose of feature engineering and some exploratory plotting. Between the two classes, you may want to load a file in similar but slightly different ways. To save on scripting, you could accomplish this by having Features inherit the `load()` method from Dataset and modify it in Features:
 
 ```
 class Features(Dataset):
