@@ -12,8 +12,8 @@ USVotesGraphs is a package that provides a visual report on the voting history o
 	3. Latest Graphs
 	4. Project Organization
 	
-## 1. OOP & Classes (abridged)
 ------------
+## 1. OOP & Classes (abridged)
 
 ### 1.1 Why do Data Science with Classes
 
@@ -94,7 +94,6 @@ class Features(Dataset):
 
 ------------
 ## 2. Data to Visual Pipeline:
-------------
 
 Given the data in `data/processed`, the `src/data/build_features.py` module is currently used
 to generate an exploratory 2-dimensional t-SNE plot.
@@ -103,13 +102,11 @@ to generate an exploratory 2-dimensional t-SNE plot.
 
 ------------
 ## 3. Latest Graphs:
-------------
 
 [Under construction]
 
 ------------
 4. Project Organization
-------------
 
 [Under construction]
 
