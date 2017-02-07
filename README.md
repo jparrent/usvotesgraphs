@@ -1,7 +1,7 @@
 # USVotesGraphs
 
 What is the clustering behavior of congressional members in terms of their individual voting records, and what does it look like? Is one
-party completely disparate from another; what, if any, factions exist; and when did those groups peel off from the majority? Answers to some or all of these questions may be obvious to those tuned into current events, but it would be nice to visualize this using the available voting data from [link]. 
+party completely disparate from another; what, if any, factions exist; and when did those groups peel off from the majority? Answers to some or all of these questions may be obvious to those tuned into current events, but it would be nice to visualize this using the available voting data from [link](https://www.govtrack.us/developers/data). 
 
 USVotesGraphs is a package that provides a visual report on the voting history of the US Congress, including past and present sessions. Currently the project only has barebones plotting utilities for t-distributed Stochastic Neighbor Embeddings. A "t-SNE" serves to preserve high-dimensional structures of the data at lower dimensions. I will soon expand this to include methods that generate animated gifs of the time-evolution of the clustering behaviors. This project also serves as a primer to budding data scientists who may be looking to capitalize on building scalable projects via Objected-oriented programming (OOP) with Python -- this as opposed to delapidated, one-off scripts that not only break when touched, but resist any momentum in testing ideas. 
 
