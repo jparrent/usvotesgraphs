@@ -65,22 +65,22 @@ if __name__ == '__main__':
 
 Here we have the definition of a class, or a template for creating 'instances' of objects, followed by the primary instructions in `main()`. This is an example format that will likely keep the project well-organized over time. And with only four methods to build out, this class already has most everything a data scientist frequently uses when handling data.
 
-The `__init__` is a special method that is used to initialize variables. You think of it as a method that stores whatever it is you need to keep track of, e.g., the data, today's date, or to call another method.
+The `__init__` is a special method that is used to initialize variables. Think of it as a method that stores whatever it is you need to keep track of, e.g., the data, today's date, or to call another method.
 
 What is `self`? This is how to generalize a class's methods and attributes so that one instance of that class does not affect a separate instance. A class's method needs to be passed `self`, i.e. `def load(self, *args, **kwargs):`, to point to the instance when called via `data = Dataset.load(*args, **kwargs)`. And if you want to use a class's methods or attributes within the class itself, prepend `self.` to that method or attribute.
 
-What are `*args` and `**kwargs`? This is how Python 'unpacks' a sequence of arguments and a dictionary of keyword arguments, respectively. You can think of them as placeholders until you figure out what variables you are going to pass -- you can also leave them as is and handle within the method definition. 
+What are `*args` and `**kwargs`? This is how Python 'unpacks' a sequence of arguments and a dictionary of keyword arguments, respectively. You can think of them as placeholders until you figure out what variables you are going to pass. You can also leave them as is and handle within a given method's definition. 
 
 
 ### 1.3 Guiding Principles
 
 **Abstraction** - This is the idea that methods have one job.
 
-**Encapsulation** - Treating class attributes with care by using `self.__data` to store variables means that `Dataset().data = 0` will not result in overwriting the data. Instead build a method like `Dataset.load()` to retrieve the data and in whatever format you want. 
+**Encapsulation** - Treating class attributes with care by using `self.__data` to store variables means that `Dataset().data = 0` will not result in overwriting the data, nor will `Dataset().__data = 0`. Instead build a method like `Dataset.load()` to retrieve `self.__data`, and in whatever format you want. 
 
-**Inheritance** - One class can inherit all methods and attributes from another if so desired. 
+**Inheritance** - One class can inherit all methods and attributes from one or more classes if so desired. 
 
-**Polymorphism** - Say you have a Dataset class and a Features class. Between the two classes, you may want to load a file in similar but slightly different ways. To save on scripting, you could accomplish this by having Features inherit the `load()` method from Dataset and modify it in Features:
+**Polymorphism** - Say you have a Dataset class representing actions to be done on the raw and processed data, and a separate Features class which has the sole purpose of feature engineering and some exploratory plotting functionalities. Between the two classes, you may want to load a file in similar but slightly different ways. To save on scripting, you could accomplish this by having Features inherit the `load()` method from Dataset and modify it in Features:
 
 ```
 class Features(Dataset):
@@ -91,6 +91,13 @@ class Features(Dataset):
 		
 ```
 
+### 1.4 Topics Not Covered (yet)
+
+* Decorators
+
+* Class and Static Methods
+
+* Multiple Inheritance
 
 ------------
 ## 2. Data to Visual Pipeline:
