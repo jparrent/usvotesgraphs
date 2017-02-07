@@ -139,7 +139,7 @@ These and other points will be revisited and updated soon.
     ├── LICENSE
     ├── Makefile           <- Makefile with commands like `make data` or `make train` (currently not in use)
     ├── README.md          <- The top-level README for developers using this project.
-    ├── data
+    ├── data		   <- This directory is omitted from this repo due to large file sizes.
     │   ├── processed      <- The final, canonical data sets for modeling.
     │   └── raw            <- The original .json data from www.govtrack.us.
     │
