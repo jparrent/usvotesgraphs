@@ -115,8 +115,9 @@ The transformations applied to the processed data have not yet been tuned, but a
 <p align="center">
   <img src="https://github.com/jparrent/usvotesgraphs/blob/master/src/features/senate_house_tSNE_SVD50_StandardScaler_20170202.png" alt="t-SNE of US Congressional Votes for the 113th Session"/>
 </p>
+
 ------------
-4. Project Organization
+## 4. Project Organization
 
 [Under construction]
 
