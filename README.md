@@ -8,8 +8,8 @@ USVotesGraphs is a package that provides a visual report on the voting history o
 # Outline of README:
 
 	1. OOP & Classses
-	2. Data2Viz Pipeline
-	3. Latest Graph
+	2. Data to Visual Pipeline
+	3. Latest Graphs
 	4. Project Organization
 	
 ------------
@@ -78,7 +78,7 @@ What are `*args` and `**kwargs`? This is how Python 'unpacks' a sequence of argu
 [Under construction]
 
 ------------
-## 2. Data Pipeline:
+## 2. Data to Visual Pipeline:
 ------------
 
 Given the data in `data/processed`, the `src/data/build_features.py` module is currently used
@@ -87,7 +87,7 @@ to generate an exploratory 2-dimensional t-SNE plot.
 [Under construction]
 
 ------------
-## 3. Latest Visuals:
+## 3. Latest Graphs:
 ------------
 
 [Under construction]
