@@ -77,6 +77,17 @@ What are `*args` and `**kwargs`? This is how Python 'unpacks' a sequence of argu
 
 [Under construction]
 
+**Abstraction**
+This is the idea that methods have one job.
+
+**Encapsulation**
+Treating class attributes with care by using `self.__data` to store variables means that `Dataset().data = 0` will not result in overwriting the data. Instead build a method like `Dataset.load()` to retreive the data and in whatever format you want. 
+
+**Inheritence**
+
+**Polymorphism**
+
+
 ------------
 ## 2. Data to Visual Pipeline:
 ------------
