@@ -6,14 +6,14 @@ party completely disparate from another in one chamber but not the other; what, 
 USVotesGraphs is a package that provides a visual report on the voting history of the US Congress, including past and present sessions. Currently the project only has bare-bones plotting utilities for t-distributed Stochastic Neighbor Embeddings. A "t-SNE" serves to preserve high-dimensional structures of the data at lower dimensions. I will soon expand this to include methods that generate animated gifs of the time-evolution of the clustering behaviors. This project also serves as a primer to budding data scientists who may be looking to capitalize on building scalable projects via Objected-oriented programming (OOP) with Python -- this as opposed to dilapidated, one-off scripts that not only break when touched, but resist any momentum in testing ideas. 
 
 # Outline of README:
-[OOP & Classes](#OOP)
-	1. [OOP & Classes](#OOP)
-	2. Data to Visual Pipeline
-	3. Latest Graphs
-	4. Project Organization
+1. [OOP & Classes](#OOP)
+2. [Data to Visual Pipeline](#Pipeline)
+3. [Latest Graphs](#Graphs)
+4. [Project Organization](#Organization)
 	
-------------
-## 1. OOP & Classes (abridged) <a id='OOP'></a>
+---
+<a id='OOP'></a>
+## 1. OOP & Classes (abridged)
 
 ### 1.1 Why do Data Science with Classes?
 
@@ -99,7 +99,8 @@ class Features(Dataset):
 
 * Multiple Inheritance
 
-------------
+---
+<a id='Pipeline'></a>
 ## 2. Data to Visual Pipeline:
 
 Currently there are only two scripts for this project, `src/data/make_dataset.py` and `src/features/build_features.py`. The Dataset class in make_dataset.py processes the raw .json data in `src/data/raw/` and outputs .csv files to `data/processed/`. The end product is effectively a spreadsheet of congressional members (rows) and their votes cast on more than 1800 measures/bills (columns). Yea, Nay, and Abstain votes are represented as 1, 0, and -1, respectively. Some additional metadata about each member is also saved, namely their Party and State.
@@ -109,7 +110,8 @@ to generate an exploratory 2-dimensional t-SNE plot using scikit-learn and matpl
 
 To plot both the Senate and House separately on similar scales, which separately vote on a different set of measures, I have opted toward using either StandScalar or RobustScaler from scikit-learn. To see what it looks like when both the Senate and House are treated as one body, see [here](https://github.com/jparrent/usvotesgraphs/blob/master/src/features/All_Congress_tSNE_SVD50_20170201.png).
 
-------------
+---
+<a id='Graphs'></a>
 ## 3. Latest Graphs:
 
 The transformations applied to the processed data have not yet been tuned, but are simply 'out of the box' implementations of both t-SNE and TruncatedSVD. It is also worth noting that [t-SNE plots can be misleading](http://distill.pub/2016/misread-tsne/), and in my opinion are best served as an animated series of iterations. That said, let's see the first graph from USVotesGraphs.
@@ -130,7 +132,8 @@ Pending further tuning and the creation of an animated series of t-SNE iteration
 
 These and other points will be revisited and updated soon. 
 
-------------
+---
+<a id='Organization'></a>
 ## 4. Project Organization
 
 [Under construction]
