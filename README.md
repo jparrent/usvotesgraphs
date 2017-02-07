@@ -75,15 +75,22 @@ What are `*args` and `**kwargs`? This is how Python 'unpacks' a sequence of argu
 
 ### 1.3 Guiding Principles
 
-[Under construction]
-
 **Abstraction** - This is the idea that methods have one job.
 
 **Encapsulation** - Treating class attributes with care by using `self.__data` to store variables means that `Dataset().data = 0` will not result in overwriting the data. Instead build a method like `Dataset.load()` to retreive the data and in whatever format you want. 
 
-**Inheritence**
+**Inheritence** - One class can inherit all methods and attributes from another if so desired. 
 
-**Polymorphism**
+**Polymorphism** - Say you have a Dataset class and a Features class. Between the two classes, you may want to load a file in similar but slightly different ways. To save on scripting, you could accomplish this by having Features inherit the `load()` method from Dataset and modify it in Features:
+
+```
+class Features(Dataset):
+
+	def __init__(self):
+		super().__init__()
+		self.__data = []  # {} for the base class of Dataset
+		
+```
 
 
 ------------
