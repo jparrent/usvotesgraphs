@@ -3,11 +3,11 @@
 What is the clustering behavior of members of Congress in terms of their individual voting records, and what does it look like over time? Is one
 party completely disparate from another in one chamber but not the other; what, if any, factions exist; and when did those groups peel off from the majority? Answers to some or all of these questions may be obvious to those tuned into current events, but it would be advantageous to visualize this using the available voting data from [govtrack.us](https://www.govtrack.us/developers/data). 
 
-USVotesGraphs is a package that provides a visual report on the voting history of the US Congress, including past and present sessions. Currently the project only has barebones plotting utilities for t-distributed Stochastic Neighbor Embeddings. A "t-SNE" serves to preserve high-dimensional structures of the data at lower dimensions. I will soon expand this to include methods that generate animated gifs of the time-evolution of the clustering behaviors. This project also serves as a primer to budding data scientists who may be looking to capitalize on building scalable projects via Objected-oriented programming (OOP) with Python -- this as opposed to delapidated, one-off scripts that not only break when touched, but resist any momentum in testing ideas. 
+USVotesGraphs is a package that provides a visual report on the voting history of the US Congress, including past and present sessions. Currently the project only has bare-bones plotting utilities for t-distributed Stochastic Neighbor Embeddings. A "t-SNE" serves to preserve high-dimensional structures of the data at lower dimensions. I will soon expand this to include methods that generate animated gifs of the time-evolution of the clustering behaviors. This project also serves as a primer to budding data scientists who may be looking to capitalize on building scalable projects via Objected-oriented programming (OOP) with Python -- this as opposed to dilapidated, one-off scripts that not only break when touched, but resist any momentum in testing ideas. 
 
 # Outline of README:
 
-	1. OOP & Classses
+	1. OOP & Classes
 	2. Data to Visual Pipeline
 	3. Latest Graphs
 	4. Project Organization
@@ -17,14 +17,14 @@ USVotesGraphs is a package that provides a visual report on the voting history o
 
 ### 1.1 Why do Data Science with Classes
 
-More often than not, data scientits need to write one-off, barebones scripts to accomplish a specific or 
-time-sensitive task. In order to add more functionality, refactoring the code is usually needed, particularly when the scripts are old. I have found it most useful to start a project as close to a well-orgaized state as possible, and in terms of both setting up project directories and defining functions within a set of classes:
+More often than not, data scientits need to write one-off, bare-bones scripts to accomplish a specific or 
+time-sensitive task. In order to add more functionality, refactoring the code is usually needed, particularly when the scripts are old. I have found it incredibly beneficial to start a project as close to a well-organized state as possible, and in terms of both setting up project directories and defining functions within a set of classes:
 
 * organize a directory tree before coding anything (optional: [cookie-cutter](https://github.com/audreyr/cookiecutter))
 
-* give specific 'classes' ownership of specific methods and variables so that `def main(): ...` reads like a series of clear commands, with as little logic as possible (preferrably none)
+* give specific 'classes' ownership of specific methods and variables so that `def main(): ...` reads like a series of clear commands, with as little logic as possible (preferably none)
 
-Doing so will not ensure that you are utilizing all Object-oriented programming design patterns principes, much less following them in the most appropriate ways, but it will put you much closer to that end in the long run.
+Doing so will not ensure that you are utilizing all Object-oriented programming design patterns principles, much less following them in the most appropriate ways, but it will put you much closer to that end in the long run.
 
 ### 1.2 How and What?
 
@@ -76,9 +76,9 @@ What are `*args` and `**kwargs`? This is how Python 'unpacks' a sequence of argu
 
 **Abstraction** - This is the idea that methods have one job.
 
-**Encapsulation** - Treating class attributes with care by using `self.__data` to store variables means that `Dataset().data = 0` will not result in overwriting the data. Instead build a method like `Dataset.load()` to retreive the data and in whatever format you want. 
+**Encapsulation** - Treating class attributes with care by using `self.__data` to store variables means that `Dataset().data = 0` will not result in overwriting the data. Instead build a method like `Dataset.load()` to retrieve the data and in whatever format you want. 
 
-**Inheritence** - One class can inherit all methods and attributes from another if so desired. 
+**Inheritance** - One class can inherit all methods and attributes from another if so desired. 
 
 **Polymorphism** - Say you have a Dataset class and a Features class. Between the two classes, you may want to load a file in similar but slightly different ways. To save on scripting, you could accomplish this by having Features inherit the `load()` method from Dataset and modify it in Features:
 
@@ -111,49 +111,49 @@ to generate an exploratory 2-dimensional t-SNE plot.
 [Under construction]
 
 
-    ├── LICENSE
-    ├── Makefile           <- Makefile with commands like `make data` or `make train`
-    ├── README.md          <- The top-level README for developers using this project.
-    ├── data
-    │   ├── external       <- Data from third party sources.
-    │   ├── interim        <- Intermediate data that has been transformed.
-    │   ├── processed      <- The final, canonical data sets for modeling.
-    │   └── raw            <- The original, immutable data dump.
-    │
-    ├── docs               <- A default Sphinx project; see sphinx-doc.org for details
-    │
-    ├── models             <- Trained and serialized models, model predictions, or model summaries
-    │
-    ├── notebooks          <- Jupyter notebooks. Naming convention is a number (for ordering),
-    │                         the creator's initials, and a short `-` delimited description, e.g.
-    │                         `1.0-jqp-initial-data-exploration`.
-    │
-    ├── references         <- Data dictionaries, manuals, and all other explanatory materials.
-    │
-    ├── reports            <- Generated analysis as HTML, PDF, LaTeX, etc.
-    │   └── figures        <- Generated graphics and figures to be used in reporting
-    │
-    ├── requirements.txt   <- The requirements file for reproducing the analysis environment, e.g.
-    │                         generated with `pip freeze > requirements.txt`
-    │
-    ├── src                <- Source code for use in this project.
-    │   ├── __init__.py    <- Makes src a Python module
-    │   │
-    │   ├── data           <- Scripts to download or generate data
-    │   │   └── make_dataset.py
-    │   │
-    │   ├── features       <- Scripts to turn raw data into features for modeling
-    │   │   └── build_features.py
-    │   │
-    │   ├── models         <- Scripts to train models and then use trained models to make
-    │   │   │                 predictions
-    │   │   ├── predict_model.py
-    │   │   └── train_model.py
-    │   │
-    │   └── visualization  <- Scripts to create exploratory and results oriented visualizations
-    │       └── visualize.py
-    │
-    └── tox.ini            <- tox file with settings for running tox; see tox.testrun.org
+    &#9500;&#9472;&#9472; LICENSE
+    &#9500;&#9472;&#9472; Makefile           <- Makefile with commands like `make data` or `make train`
+    &#9500;&#9472;&#9472; README.md          <- The top-level README for developers using this project.
+    &#9500;&#9472;&#9472; data
+    &#9474;   &#9500;&#9472;&#9472; external       <- Data from third party sources.
+    &#9474;   &#9500;&#9472;&#9472; interim        <- Intermediate data that has been transformed.
+    &#9474;   &#9500;&#9472;&#9472; processed      <- The final, canonical data sets for modeling.
+    &#9474;   &#9492;&#9472;&#9472; raw            <- The original, immutable data dump.
+    &#9474;
+    &#9500;&#9472;&#9472; docs               <- A default Sphinx project; see sphinx-doc.org for details
+    &#9474;
+    &#9500;&#9472;&#9472; models             <- Trained and serialized models, model predictions, or model summaries
+    &#9474;
+    &#9500;&#9472;&#9472; notebooks          <- Jupyter notebooks. Naming convention is a number (for ordering),
+    &#9474;                         the creator's initials, and a short `-` delimited description, e.g.
+    &#9474;                         `1.0-jqp-initial-data-exploration`.
+    &#9474;
+    &#9500;&#9472;&#9472; references         <- Data dictionaries, manuals, and all other explanatory materials.
+    &#9474;
+    &#9500;&#9472;&#9472; reports            <- Generated analysis as HTML, PDF, LaTeX, etc.
+    &#9474;   &#9492;&#9472;&#9472; figures        <- Generated graphics and figures to be used in reporting
+    &#9474;
+    &#9500;&#9472;&#9472; requirements.txt   <- The requirements file for reproducing the analysis environment, e.g.
+    &#9474;                         generated with `pip freeze > requirements.txt`
+    &#9474;
+    &#9500;&#9472;&#9472; src                <- Source code for use in this project.
+    &#9474;   &#9500;&#9472;&#9472; __init__.py    <- Makes src a Python module
+    &#9474;   &#9474;
+    &#9474;   &#9500;&#9472;&#9472; data           <- Scripts to download or generate data
+    &#9474;   &#9474;   &#9492;&#9472;&#9472; make_dataset.py
+    &#9474;   &#9474;
+    &#9474;   &#9500;&#9472;&#9472; features       <- Scripts to turn raw data into features for modeling
+    &#9474;   &#9474;   &#9492;&#9472;&#9472; build_features.py
+    &#9474;   &#9474;
+    &#9474;   &#9500;&#9472;&#9472; models         <- Scripts to train models and then use trained models to make
+    &#9474;   &#9474;   &#9474;                 predictions
+    &#9474;   &#9474;   &#9500;&#9472;&#9472; predict_model.py
+    &#9474;   &#9474;   &#9492;&#9472;&#9472; train_model.py
+    &#9474;   &#9474;
+    &#9474;   &#9492;&#9472;&#9472; visualization  <- Scripts to create exploratory and results oriented visualizations
+    &#9474;       &#9492;&#9472;&#9472; visualize.py
+    &#9474;
+    &#9492;&#9472;&#9472; tox.ini            <- tox file with settings for running tox; see tox.testrun.org
 
 
 --------
