@@ -17,7 +17,7 @@ USVotesGraphs is a package that provides a visual report on the voting history o
 
 ### 1.1 Why do Data Science with Classes?
 
-More often than not, data scientits need to write one-off, bare-bones scripts to accomplish a specific or 
+More often than not, data scientists need to write one-off, bare-bones scripts to accomplish a specific or 
 time-sensitive task. In order to add more functionality, refactoring the code is usually needed, particularly when the scripts are old. I have found it incredibly beneficial to start a project as close to a well-organized state as possible, and in terms of both setting up project directories and defining functions within a set of classes:
 
 * organize a directory tree before coding anything (optional: [cookie-cutter](https://github.com/audreyr/cookiecutter))
@@ -128,7 +128,7 @@ Pending further tuning and the creation of an animated series of t-SNE iteration
 
 * Senator Sanders (I) is an outlier for both parties in the Senate.
 
-* Represenative Boehner (R), then House Minority Leader, is an outlier from the Republican party. This could possibly reflect [tumultuous relations between him and the 'Freedom Caucus'](http://www.newyorker.com/magazine/2015/12/14/a-house-divided) (R) at the time. It is unclear if the stream of points Boehner is neighbors with is artifical; this may be due to too many features given to t-SNE (re: 50), or [may disappear upon additional iterations](http://distill.pub/2016/misread-tsne/). Similarly, it is unclear if the Freedom Caucus is a part of the right-most cluster of Reps and Dems in the House. 
+* Representative Boehner (R), then House Minority Leader, is an outlier from the Republican party. This could possibly reflect [tumultuous relations between him and the 'Freedom Caucus'](http://www.newyorker.com/magazine/2015/12/14/a-house-divided) (R) at the time. It is unclear if the stream of points Boehner is neighbors with is artificial; this may be due to too many features given to t-SNE (re: 50), or [may disappear upon additional iterations](http://distill.pub/2016/misread-tsne/). Similarly, it is unclear if the Freedom Caucus is a part of the right-most cluster of Reps and Dems in the House. 
 
 These and other points will be revisited and updated soon. 
 
