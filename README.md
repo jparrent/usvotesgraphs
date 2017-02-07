@@ -6,7 +6,7 @@ party completely disparate from another in one chamber but not the other; what, 
 USVotesGraphs is a package that provides a visual report on the voting history of the US Congress, including past and present sessions. Currently the project only has bare-bones plotting utilities for t-distributed Stochastic Neighbor Embeddings. A "t-SNE" serves to preserve high-dimensional structures of the data at lower dimensions. I will soon expand this to include methods that generate animated gifs of the time-evolution of the clustering behaviors. This project also serves as a primer to budding data scientists who may be looking to capitalize on building scalable projects via Objected-oriented programming (OOP) with Python -- this as opposed to dilapidated, one-off scripts that not only break when touched, but resist any momentum in testing ideas. 
 
 # Outline of README:
-
+[OOP & Classes](#OOP)
 	1. [OOP & Classes](#OOP)
 	2. Data to Visual Pipeline
 	3. Latest Graphs
