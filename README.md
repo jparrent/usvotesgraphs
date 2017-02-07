@@ -12,7 +12,6 @@ USVotesGraphs is a package that provides a visual report on the voting history o
 	3. Latest Graphs
 	4. Project Organization
 	
-------------
 ## 1. OOP & Classes (abridged)
 ------------
 
