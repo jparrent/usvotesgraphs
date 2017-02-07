@@ -24,7 +24,7 @@ time-sensitive task. In order to add more functionality, refactoring the code is
 
 * give specific 'classes' ownership of specific methods and variables so that `def main(): ...` reads like a series of clear commands, with as little logic as possible (preferably none)
 
-Doing so will not ensure that you are utilizing all Object-oriented programming design patterns principles, much less following them in the most appropriate ways, but it will put you much closer to that end in the long run.
+Doing so will not necessarily ensure that you are utilizing all Object-oriented programming design patterns principles, much less following them in the most appropriate ways, but it will put you much closer to that end in the long run.
 
 ### 1.2 How and What?
 
@@ -63,7 +63,7 @@ if __name__ == '__main__':
 	main(*args, **kwargs)
 ```
 
-Here we have the definition of a class, or a template for creating 'instances' of objects. This is also how the project will stay organized. And with only four methods to build out, this class already has most everything a data scientist frequently uses when handling data.
+Here we have the definition of a class, or a template for creating 'instances' of objects, followed by the primary instructions in `main()`. This is an example format that will likely keep the project well-organized over time. And with only four methods to build out, this class already has most everything a data scientist frequently uses when handling data.
 
 The `__init__` is a special method that is used to initialize variables. You can also think about it as a method that stores whatever it is you need to keep track of, e.g., the data, today's date, or to call another method.
 
