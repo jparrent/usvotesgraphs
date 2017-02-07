@@ -1,9 +1,96 @@
-usvotesgraphs
-==============================
+# USVotesGraphs
 
-EDA of votes by the US Congress.
+What is the clustering behavior of congressional members in terms of their individual voting records, and what does it look like? Is one
+party completely disparate from another; what, if any, factions exist; and when did those groups peel off from the majority? Answers to some or all of these questions may be obvious to those tuned into current events, but it would be nice to visualize this using the available voting data from [link]. 
 
-Project Organization
+USVotesGraphs is a package that provides a visual report on the voting history of the US Congress, including past and present sessions. Currently the project only has barebones plotting utilities for t-distributed Stochastic Neighbor Embeddings. A "t-SNE" serves to preserve high-dimensional structures of the data at lower dimensions. I will soon expand this to include methods that generate animated gifs of the time-evolution of the clustering behaviors. This project also serves as a primer to budding data scientists who may be looking to capitalize on building scalable projects via Objected-oriented programming (OOP) with Python -- this as opposed to delapidated, one-off scripts that not only break when touched, but resist any momentum in testing ideas. 
+
+# Outline of README:
+
+	1. OOP & Classses
+	2. Data2Viz Pipeline
+	3. Latest Graph
+	4. Project Organization
+	
+------------
+## 1. OOP & Classes (abridged)
+------------
+
+### 1.1 Why do Data Science with Classes
+
+More often than not, data scientits need to write one-off, barebones scripts to accomplish a specific or 
+time-sensitive task. In order to add more functionality, refactoring the code is usually needed, particularly when the scripts are old. So, I have found it most useful to start a project as close to a well-orgaized state as possible, and in terms of both setting up project directories and defining functions:
+
+* organize a directory tree before coding anything (optional: [cookie-cutter](https://github.com/audreyr/cookiecutter))
+
+* give specific 'classes' ownership of specific methods and variables so that `def main(): ...` reads like a series of clear commands, with as little logic as possible (preferrably none)
+
+Doing so will not ensure that you are utilizing all Object-oriented programming design patterns principes, much less following them in the most appropriate ways, but it will put you much closer to that end in the long run.
+
+### 1.2 How and What?
+
+Even if you are unfamiliar with OOP, study the following pattern until you know it:
+```
+class Dataset:
+"""Class Description"""
+	
+	def __init__(self, *args, **kwargs):
+		self.__data = {}
+		
+	def load(self, *args, **kwargs)
+		pass
+		return self.__data
+		
+	def filter(self, *args, **kwargs):
+		pass
+		
+	def transform(self, *args, **kwargs):
+		pass
+		
+	def plot(self, *args, **kwargs):
+		pass
+		
+def main(*args, **kwargs):
+
+	data = Dataset(*args, **kwargs).load()
+	
+	filtered_data = data.filter(*args, **kwargs)
+	transform_data = data.transform(*args, **kwargs)
+	
+	data.plot(*args, **kwargs)
+		
+if __name__ == '__main__':
+	
+	main(*args, **kwargs)
+```
+
+Here we have the definition of a class, or a template for creating 'instances' of objects. This is also how the project will stay organized. And with only four methods to build out, this class already has most everything a data scientist frequently uses when handling data.
+
+The `__init__` is a special method that is used to initialize variables. You can also think about it as a method that stores whatever it is you need to keep track of, e.g., the data, today's date, or call another method.
+
+What is `self`? This is how to generalize a class's methods so that one instance of that class does not affect a separate instance. A class's method needs to be passed `self`, i.e. `load(self, *args, **kwargs)`, to point to the instance when called via `Dataset.load(*args, **kwargs)`. And if you want to use a class's methods or attributes within the class itself, prepend `self.` to that method or attribute.
+
+What are `*args` and `**kwargs`? This is how Python 'unpacks' a sequence of arguments and a dictionary of keyword arguments, respectively. You can think of them as placeholders until you figure out what variables you are going to pass -- you can also leave them as is and handle within the method. 
+
+
+### 1.3 Guiding Principles
+
+So how does all this explain 
+
+------------
+## 2. Data Pipeline:
+------------
+
+Given the data in `data/processed`, the `src/data/build_features.py` module is currently used
+to generate an exploratory 2-dimensional t-SNE plot.
+
+------------
+## 3. Latest Visuals:
+------------
+
+There are several things to note:
+------------
+4. Project Organization
 ------------
 
     ├── LICENSE
