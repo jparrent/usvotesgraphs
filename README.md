@@ -20,7 +20,7 @@ USVotesGraphs is a package that provides a visual report on the voting history o
 More often than not, data scientists need to write one-off, bare-bones scripts to accomplish a specific or 
 time-sensitive task. In order to add more functionality, refactoring the code is usually needed, particularly when the scripts are old. I have found it incredibly beneficial to start a project as close to a well-organized state as possible, and in terms of both setting up project directories and defining functions within a set of classes:
 
-* organize a directory tree before coding anything (optional: [cookie-cutter](https://github.com/audreyr/cookiecutter))
+* organize a directory tree before coding anything (optional: [cookiecutter](https://github.com/audreyr/cookiecutter))
 
 * give specific 'classes' ownership of specific methods and variables so that `def main(): ...` reads like a series of clear commands, with as little logic as possible (preferably none)
 
