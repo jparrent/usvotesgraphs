@@ -7,13 +7,13 @@ USVotesGraphs is a package that provides a visual report on the voting history o
 
 # Outline of README:
 
-	1. OOP & Classes
+	1. [OOP & Classes](#OOP)
 	2. Data to Visual Pipeline
 	3. Latest Graphs
 	4. Project Organization
 	
 ------------
-## 1. OOP & Classes (abridged)
+## 1. OOP & Classes (abridged) <a id='OOP'></a>
 
 ### 1.1 Why do Data Science with Classes?
 
