@@ -128,7 +128,7 @@ Pending further tuning and the creation of an animated series of t-SNE iteration
 
 * Senator Sanders (I) is an outlier for both parties in the Senate.
 
-* Representative Boehner (R), then House Minority Leader, is an outlier from the Republican party. This could possibly reflect [tumultuous relations between him and the 'Freedom Caucus'](http://www.newyorker.com/magazine/2015/12/14/a-house-divided) (R) at the time. It is unclear if the stream of points Boehner is neighbors with is artificial; this may be due to too many features given to t-SNE (re: 50), or [may disappear upon additional iterations](http://distill.pub/2016/misread-tsne/). Similarly, it is unclear if the Freedom Caucus is a part of the right-most cluster of Reps and Dems in the House. 
+* Representative Boehner (R), then House Minority Leader, is an outlier from the Republican party. This could possibly reflect [tumultuous relations between him and the 'Freedom Caucus'](http://www.newyorker.com/magazine/2015/12/14/a-house-divided) (R) at the time. It is unclear if the stream of points Boehner is neighbors with is artificial or not; this could be due to too many features given to t-SNE (re: 50), or [it could disappear upon additional iterations](http://distill.pub/2016/misread-tsne/). Similarly, it is unclear if the Freedom Caucus is a part of the right-most cluster of Reps and Dems in the House. 
 
 These and other points will be revisited and updated soon. 
 
@@ -139,7 +139,7 @@ These and other points will be revisited and updated soon.
     ├── LICENSE
     ├── Makefile           <- Makefile with commands like `make data` or `make train` (currently not in use)
     ├── README.md          <- The top-level README for developers using this project.
-    ├── data
+    ├── data		   <- This directory is omitted from this repo due to large file sizes.
     │   ├── processed      <- The final, canonical data sets for modeling.
     │   └── raw            <- The original .json data from www.govtrack.us.
     │
