@@ -10,6 +10,7 @@ import os
 from pathlib import Path
 import click
 import logging
+import json
 import numpy as np
 import pandas as pd
 from sklearn.decomposition import TruncatedSVD
@@ -17,6 +18,7 @@ from sklearn.manifold import TSNE
 from sklearn_pandas import DataFrameMapper
 from sklearn.preprocessing import StandardScaler, RobustScaler
 import matplotlib.pyplot as plt
+import matplotlib.animation as animation
 
 
 class Features:
@@ -25,17 +27,38 @@ class Features:
 
         self._ROOT = str(Path(os.getcwd()).parents[1])
         self._input_data_path = os.path.join(self._ROOT, 'data/processed/')
+        self._supplemental_path = os.path.join(self._ROOT, 'data/supplemental/')
         self._session_number = session_number
         self._filehandle = '_'.join([str(self._session_number), 'dataframe.csv'])
         self._input_file = os.path.join(self._input_data_path, self._filehandle)
         self._data = pd.read_csv(self._input_file, encoding='utf-8')
+        self._sens, self._reps, self._senate_majority, self._house_majority = self.load_select_congressmen()
 
-    def load(self):
+    def load_select_congressmen(self):
+        """Load congressmen presets in select_congressmen.json to be plotted.
+        """
+
+        jfilename = os.path.join(self._supplemental_path, 'select_congressmen.json')
+
+        with open(jfilename) as jfile:
+
+            data = json.load(jfile)
+            session = data[self._session_number]
+
+            senators = session['Senate']['Members']
+            senate_majority = session['Senate']['Majority']
+            representatives = session['House']['Members']
+            house_majority = session['House']['Majority']
+
+        return senators, representatives, senate_majority, house_majority
+
+    def load_records(self):
         """Read input dataframe.csv files (Votes Records) in
         ../../data/processed/ and return Party (y_labels) and votes cast (X_data)
         """
 
         df = self._data.set_index('Name')
+
         return df
 
     def transform_SVD_tSNE(self, df, chamber, n_features_SVD=50,
@@ -47,10 +70,10 @@ class Features:
         """
 
         df = df[df.Chamber == chamber]
-        cols = df.columns.tolist()[3:]
+        data_cols = df.columns.tolist()[3:]
 
         svd = TruncatedSVD(n_features_SVD)
-        svd_mapper = DataFrameMapper([(df.columns[3:], svd)])
+        svd_mapper = DataFrameMapper([(data_cols, svd)])
         X_trunc = svd_mapper.fit_transform(df.copy())
 
         tSNE = TSNE(n_components=n_components, random_state=0)
@@ -61,7 +84,9 @@ class Features:
 
             X_tSNE = StandardScaler().fit_transform(X_tSNE)
 
-        X_tSNE = RobustScaler().fit_transform(X_tSNE)
+        else:
+
+            X_tSNE = RobustScaler().fit_transform(X_tSNE)
 
         df_X_tSNE = pd.DataFrame(X_tSNE, index=df.index)
         df_tSNE = pd.concat([df[['Party', 'State']], df_X_tSNE], axis=1)
@@ -82,19 +107,22 @@ class Features:
             label = ' '.join([person, party])
             groups.append(point)
             labels.append(label)
+
         return groups, labels
 
-    def plot_2D_tSNE(self, df_senate, df_house, senators=[], representatives=[]):
+    def plot_2D_tSNE(self, df_senate, df_house):
         """Plot tSNE for senate and house.
         """
 
         f, (senate, house) = plt.subplots(2, sharex=False, sharey=False)
         marker = '.'
-        alpha = 0.7
+        alpha = 0.5
         labels = ['Dem', 'Reb', 'Ind']
         colors = ['b', 'r', 'm']
-        senate_markers = ['*', '+', 'x', '^']
-        house_markers = ['v', '<', '>', 'D']
+        # senate_markers = ['+', 'x', '*', '^', '1', '3', '4', '8']
+        senate_markers = '+ x * ^ 1 3 4 8'.split()
+        house_markers = 'v < > D s * d p'.split()
+        # house_markers = ['v', '<', '>', 'D', 's', '*', 'd', 'p']
 
         """Senate
         """
@@ -132,7 +160,7 @@ class Features:
                               marker=marker, alpha=alpha)
         Inds = senate.scatter(vis_x_inds_senate, vis_y_inds_senate, c=colors[2],
                               marker=marker, alpha=alpha)
-        senate.set_title('t-SNE of US Senate Votes')
+        senate.set_title('{} {}'.format(self._senate_majority, 'Senate'))
 
         """House Scatter Plot
         """
@@ -142,7 +170,7 @@ class Features:
                       marker=marker, alpha=alpha)
         house.scatter(vis_x_inds_house, vis_y_inds_house, c=colors[2],
                       marker=marker, alpha=alpha)
-        house.set_title('t-SNE of US House Votes')
+        house.set_title('{} {}'.format(self._house_majority, 'House'))
 
         f.subplots_adjust(hspace=0.3)
         senate.axes.get_xaxis().set_ticks([])
@@ -154,18 +182,19 @@ class Features:
 
         groups = [Dems, Reps, Inds]
 
-        if senators:
+        if self._sens:
 
-            groups, labels = self.plot_congressman(df_senate, senate, senators,
+            groups, labels = self.plot_congressman(df_senate, senate, self._sens,
                                                    senate_markers, groups, labels)
 
-        if representatives:
+        if self._reps:
 
-            groups, labels = self.plot_congressman(df_house, house, representatives,
+            groups, labels = self.plot_congressman(df_house, house, self._reps,
                                                    house_markers, groups, labels)
 
         f.legend(groups,
                  labels,
+                 title='{}{} {}'.format(self._session_number, 'th', 'Congress'),
                  scatterpoints=1,
                  loc='upper left',
                  prop={'size': 8},
@@ -189,24 +218,14 @@ def main(session_number):
     logger.info('making final data set from raw data')
 
     congressional_votes = Features(session_number)
-    df = congressional_votes.load()
-    senators = ['Sanders',
-                'Reid',
-                'McConnell',
-                ]
-    representatives = ['Boehner',
-                       'Pelosi',
-                       'Cantor',
-                       'Wasserman'
-                       ]
+    df = congressional_votes.load_records()
+
     scale = 'standard'
 
     df_tSNE_senate = congressional_votes.transform_SVD_tSNE(df, chamber='s', scale=scale)
     df_tSNE_house = congressional_votes.transform_SVD_tSNE(df, chamber='h', scale=scale)
 
-    congressional_votes.plot_2D_tSNE(df_tSNE_senate, df_tSNE_house,
-                                     senators, representatives)
-
+    congressional_votes.plot_2D_tSNE(df_tSNE_senate, df_tSNE_house)
 
 if __name__ == '__main__':
     log_fmt = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
