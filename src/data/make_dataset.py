@@ -148,12 +148,18 @@ class Records:
 
             for record in yes_votes:
 
+                if record == "VP":
+                    continue
+
                 vote = 1
                 self.format_record_entry(measure, record, vote, chamber)
 
         if no_votes:
 
             for record in no_votes:
+
+                if record == "VP":
+                    continue
 
                 vote = 0
                 self.format_record_entry(measure, record, vote, chamber)
