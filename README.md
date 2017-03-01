@@ -34,11 +34,11 @@ class Dataset:
 """Class Description"""
 	
 	def __init__(self, *args, **kwargs):
-		self.__data = {}
+		self._data = {}
 		
 	def load(self, *args, **kwargs)
 		pass
-		return self.__data
+		return self._data
 		
 	def filter(self, *args, **kwargs):
 		pass
