@@ -244,7 +244,7 @@ class Animation:
 
         df = self.data  # .set_index('Name')
         # df.index = df.index.map(lambda x: ucd.normalize('NFKD', x.title()))
-        df.Party = df.Party.map({'Democrat': 'D', 'D': 'D', 'Republican': 'R',
+        df.Party = df.Party.map({'Democrat': 'D', 'D': 'D', 'ID': 'D', 'Republican': 'R',
                                  'R': 'R', 'Independent': 'I', 'I': 'I'})
         df_chamber = df[df.Chamber == chamber]
 
