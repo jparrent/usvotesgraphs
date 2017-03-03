@@ -131,7 +131,7 @@ class Records:
         """Used in the build_vote_records method depending on vote_cast.
         """
 
-        name = record['display_name'].split(' ')[0].strip(',')
+        name = record['display_name'].split(' ')[0].strip(',').title()
         congress_id = record['id']
         party = record['party']
         state = record['state']
