@@ -128,7 +128,7 @@ def animate(self, X, y, congressmen, session_number, chamber):
     lims = np.max(last_iter, axis=0), np.min(last_iter, axis=0)
     NCOLORS = len(y_mapping)
     fig = plt.figure()
-    plt.title('Congress: ' + session_number)
+    plt.title('Session ' + session_number)
     fig.set_tight_layout(True)
     ax = fig.add_subplot(111)
     brg = plt.get_cmap('brg')
@@ -138,8 +138,10 @@ def animate(self, X, y, congressmen, session_number, chamber):
 
     annotation = ax.annotate('', xy=(0, 0))
     annotation.set_animated(True)
-    annotations_dict = {j: ax.annotate(j, xy=(0, 0), xytext=(5, 5),
-                                       textcoords='offset points') for j in congressmen}
+
+    if congressmen:
+        annotations_dict = {j: ax.annotate(j, xy=(0, 0), xytext=(5, 5),
+                                           textcoords='offset points') for j in congressmen}
 
     A, B = np.array(list(zip(*pos[0].reshape(-1, 2))))
 
@@ -173,12 +175,12 @@ def animate(self, X, y, congressmen, session_number, chamber):
             dots_list[j].set_xdata(a)
             dots_list[j].set_ydata(b)
 
+        annotation_list = []
         if congressmen:
-            annotation_list = []
             num_cmen = len(congressmen)
             for k, j in enumerate(congressmen):
                 a, b = np.array(list(zip(*pos[i].reshape(-1, 2))))
-                a, b = a[y['Name'] == j], b[y['Name'] == j]
+                a, b = a[y['Name'] == j.title()], b[y['Name'] == j.title()]
 
                 annotations_dict[j].xy = (a, b)
                 annotation_list.append(annotations_dict[j])
@@ -242,8 +244,8 @@ class Animation:
         ../../data/processed/ and return Party (y_labels) and votes cast (X_data)
         """
 
-        df = self.data  # .set_index('Name')
-        # df.index = df.index.map(lambda x: ucd.normalize('NFKD', x.title()))
+        df = self.data
+        df.Name = df.Name.map(lambda x: ucd.normalize('NFKD', x.title()))
         df.Party = df.Party.map({'Democrat': 'D', 'D': 'D', 'ID': 'D', 'Republican': 'R',
                                  'R': 'R', 'Independent': 'I', 'I': 'I'})
         df_chamber = df[df.Chamber == chamber]
@@ -259,7 +261,14 @@ class Animation:
         with open(jfilename) as jfile:
 
             data = json.load(jfile)
-            session = data[self.session_number]
+
+            try:
+
+                session = data[self.session_number]
+
+            except KeyError:
+
+                return False, ''
 
             if chamber == 's':
 
@@ -327,23 +336,43 @@ class Animation:
 
 
 @click.command()
-@click.option('--session', default=1, help='Which session of Congress? (int)')
+@click.option('--session', default=113, help='Which session of Congress? (int)')
 @click.option('--chamber', help='Which chamber? s for senate, h for house')
-@click.option('--scale', help='What scale? standard or robust?')
-def main(session, chamber, scale):
+@click.option('--scale', default='robust', help='What scale? standard or robust?')
+@click.option('--all', is_flag=True, help='Process all available sessions data.')
+def main(session, chamber, scale, all):
     """ Script to create t-SNE animation.
     """
     logger = logging.getLogger(__name__)
     logger.info('making final data set from raw data')
 
-    animation = Animation(session, chamber)
-    congressmen, majority = animation.load_select_congressmen(chamber)
+    if all:
 
-    df = animation.load_data(chamber=chamber)
-    df_X, df_y = animation.transform(df, option='svd')
+        print('Building gif for: ')
 
-    tsne = tsneAnimate(TSNE(random_state=42, learning_rate=1000))
-    tsne.animate(df_X, df_y, congressmen, animation.session_number, animation.chamber)
+        for x in range(75, 114):
+
+            session = str(x)
+            print(session)
+            animation = Animation(session, chamber)
+            congressmen, majority = animation.load_select_congressmen(chamber)
+
+            df = animation.load_data(chamber=chamber)
+            df_X, df_y = animation.transform(df, option='svd')
+
+            tsne = tsneAnimate(TSNE(random_state=42, learning_rate=1000))
+            tsne.animate(df_X, df_y, congressmen, animation.session_number, animation.chamber)
+
+    else:
+
+        animation = Animation(session, chamber)
+        congressmen, majority = animation.load_select_congressmen(chamber)
+
+        df = animation.load_data(chamber=chamber)
+        df_X, df_y = animation.transform(df, option='svd')
+
+        tsne = tsneAnimate(TSNE(random_state=42, learning_rate=1000))
+        tsne.animate(df_X, df_y, congressmen, animation.session_number, animation.chamber)
 
 
 if __name__ == '__main__':
