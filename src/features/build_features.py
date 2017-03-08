@@ -25,12 +25,12 @@ import matplotlib.animation as animation
 
 class Features:
 
-    def __init__(self, session_number):
+    def __init__(self, session):
 
         self._ROOT = str(Path(os.getcwd()).parents[1])
         self._input_data_path = os.path.join(self._ROOT, 'data/processed/')
         self._supplemental_path = os.path.join(self._ROOT, 'data/supplemental/')
-        self._session_number = session_number
+        self._session_number = session
         self._filehandle = '_'.join([str(self._session_number), 'dataframe.csv'])
         self._input_file = os.path.join(self._input_data_path, self._filehandle)
         self._data = pd.read_csv(self._input_file, encoding='utf-8')
@@ -73,7 +73,14 @@ class Features:
         with open(jfilename) as jfile:
 
             data = json.load(jfile)
-            session = data[self.session_number]
+
+            try:
+
+                session = data[self.session_number]
+
+            except KeyError:
+
+                return False, False, '', ''
 
             senators = session['Senate']['Members']
             senate_majority = session['Senate']['Majority']
@@ -220,10 +227,18 @@ class Features:
             groups, labels = self.plot_congressman(df_senate, senate, self.sens,
                                                    senate_markers, groups, labels)
 
+        else:
+
+            groups, labels = [], []
+
         if self.reps:
 
             groups, labels = self.plot_congressman(df_house, house, self.reps,
                                                    house_markers, groups, labels)
+
+        else:
+
+            groups, labels = [], []
 
         f.legend(groups,
                  labels,
@@ -243,26 +258,43 @@ class Features:
         outfile = '_'.join((session_number, 'senate_house', today))
         plt.savefig(outfile, bbox_inches='tight')
 
-        plt.show()
+        # plt.show()
 
 
 @click.command()
-@click.argument('session_number')
-def main(session_number):
+# @click.argument('session_number')
+# def main(session_number):
+@click.option('--session', default='113', help='Which session of Congress? (int)')
+@click.option('--all', is_flag=True, help='Process all available sessions data.')
+def main(session, all):
     """ Script to explore dimensionality reduction using TruncatedSVD
     """
     logger = logging.getLogger(__name__)
     logger.info('making final data set from raw data')
 
-    congressional_votes = Features(session_number)
-    df = congressional_votes.load_records()
+    if all:
 
-    # scale = 'robust'
+        for x in range(75, 114):
 
-    df_tSNE_senate = congressional_votes.transform_SVD_tSNE(df, chamber='s', scale='robust')
-    df_tSNE_house = congressional_votes.transform_SVD_tSNE(df, chamber='h', scale='standard')
+            session = str(x)
+            congressional_votes = Features(session)
+            df = congressional_votes.load_records()
 
-    congressional_votes.plot_2D_tSNE(df_tSNE_senate, df_tSNE_house, session_number)
+            df_tSNE_senate = congressional_votes.transform_SVD_tSNE(df, chamber='s', scale='robust')
+            df_tSNE_house = congressional_votes.transform_SVD_tSNE(
+                df, chamber='h', scale='standard')
+
+            congressional_votes.plot_2D_tSNE(df_tSNE_senate, df_tSNE_house, session)
+
+    else:
+
+        congressional_votes = Features(session)
+        df = congressional_votes.load_records()
+
+        df_tSNE_senate = congressional_votes.transform_SVD_tSNE(df, chamber='s', scale='robust')
+        df_tSNE_house = congressional_votes.transform_SVD_tSNE(df, chamber='h', scale='standard')
+
+        congressional_votes.plot_2D_tSNE(df_tSNE_senate, df_tSNE_house, session)
 
 if __name__ == '__main__':
     log_fmt = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
