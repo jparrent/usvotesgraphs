@@ -117,11 +117,11 @@ To plot both the Senate and House separately on similar scales, which separately
 The transformations applied to the processed data have not yet been tuned, but are simply 'out of the box' implementations of both t-SNE and TruncatedSVD. It is also worth noting that [t-SNE plots can be misleading](http://distill.pub/2016/misread-tsne/), and in my opinion are best served as an animated series of iterations. That said, let's see the first graph from USVotesGraphs.
 
 <p align="center">
-  <img src="https://github.com/jparrent/usvotesgraphs/blob/master/src/visualization/113_Senate_20170301.gif" alt="t-SNE of US Congressional Votes for the 113th Session in the Senate"/>
+  <img src="https://github.com/jparrent/usvotesgraphs/blob/master/src/visualization/113_Senate_20170308.gif" alt="t-SNE of US Congressional Votes for the 113th Session in the Senate"/>
 </p>
 
 <p align="center">
-  <img src="https://github.com/jparrent/usvotesgraphs/blob/master/src/visualization/113_House_20170301.gif" alt="t-SNE of US Congressional Votes for the 113th Session in the House"/>
+  <img src="https://github.com/jparrent/usvotesgraphs/blob/master/src/visualization/113_House_20170308.gif" alt="t-SNE of US Congressional Votes for the 113th Session in the House"/>
 </p>
 
 Pending further tuning and the creation of an animated series of t-SNE iterations, below are some take away points about the 113th session of Congress (2013-2015):
