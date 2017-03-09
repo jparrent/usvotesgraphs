@@ -12,7 +12,7 @@ import logging
 import json
 import datetime
 import unicodedata as ucd
-from collections import defaultdict
+from collections import defaultdict, OrderedDict
 import numpy as np
 import pandas as pd
 import sklearn
@@ -23,16 +23,9 @@ from sklearn.manifold import TSNE
 from sklearn_pandas import DataFrameMapper
 from sklearn.preprocessing import StandardScaler, RobustScaler
 import matplotlib.pyplot as plt
-import matplotlib.colors as colors
-import matplotlib.cm as cmx
 from matplotlib.animation import FuncAnimation
 from tsne_animate import tsneAnimate
 import matplotlib.animation as animation
-import seaborn as sns
-sns.set_style('darkgrid')
-sns.set_palette('muted')
-sns.set_context("notebook", font_scale=1.5,
-                rc={"lines.linewidth": 2.5})
 
 
 def getSteps(self, X, y):
@@ -122,19 +115,15 @@ tsneAnimate.getSteps = getSteps
 def animate(self, X, y, congressmen, session_number, chamber):
 
     pos = self.getSteps(X, y)
-    y_mapping = {i: n for n, i in enumerate(set(y))}
+    party_colors = {i: 'b' if i == 'D' else 'r' if i == 'R' else 'm' for i in set(y.Party)}
 
     last_iter = pos[len(pos) - 1].reshape(-1, 2)
     lims = np.max(last_iter, axis=0), np.min(last_iter, axis=0)
-    NCOLORS = len(y_mapping)
     fig = plt.figure()
     plt.title('Session ' + session_number)
     fig.set_tight_layout(True)
     ax = fig.add_subplot(111)
-    brg = plt.get_cmap('brg')
     alpha = 0.5
-    cNorm = colors.Normalize(vmin=0, vmax=NCOLORS)
-    scalarMap = cmx.ScalarMappable(norm=cNorm, cmap=brg)
 
     annotation = ax.annotate('', xy=(0, 0))
     annotation.set_animated(True)
@@ -145,13 +134,12 @@ def animate(self, X, y, congressmen, session_number, chamber):
 
     A, B = np.array(list(zip(*pos[0].reshape(-1, 2))))
 
-    def getDots(A, B, X, y, NCOLORS, alpha, congressmen):
+    def getDots(A, B, X, y, alpha, congressmen):
         dots_list = []
 
-        for i in range(NCOLORS):
-            colorVal = scalarMap.to_rgba(i)
-            a, b = A[y['Party'] == i], B[y['Party'] == i]
-            dots, = ax.plot(b, a, 'o', color=colorVal, alpha=alpha)
+        for k, v in party_colors.iteritems():
+            a, b = A[y['Party'] == k], B[y['Party'] == k]
+            dots, = ax.plot(b, a, 'o', color=v, alpha=alpha)
             dots_list.append(dots)
 
         if congressmen:
@@ -169,11 +157,13 @@ def animate(self, X, y, congressmen, session_number, chamber):
         return [i for i in dots_list], annotation
 
     def update(i):
-        for j in range(len(dots_list)):
+
+        for j in enumerate(party_colors.iteritems()):
             a, b = np.array(list(zip(*pos[i].reshape(-1, 2))))
-            a, b = a[y['Party'] == j], b[y['Party'] == j]
-            dots_list[j].set_xdata(a)
-            dots_list[j].set_ydata(b)
+            a, b = a[y['Party'] == j[1][0]], b[y['Party'] == j[1][0]]
+            dots_list[j[0]].set_xdata(a)
+            dots_list[j[0]].set_ydata(b)
+            dots_list[j[0]].set_color(j[1][1])
 
         annotation_list = []
         if congressmen:
@@ -190,7 +180,7 @@ def animate(self, X, y, congressmen, session_number, chamber):
 
         return [i for i in dots_list] + [ax], annotation_list
 
-    dots_list = getDots(A, B, X, y, NCOLORS, alpha, congressmen)
+    dots_list = getDots(A, B, X, y, alpha, congressmen)
     frames = np.arange(0, len(pos) - 1)
 
     anim = FuncAnimation(fig, update,
@@ -202,6 +192,7 @@ def animate(self, X, y, congressmen, session_number, chamber):
     outfile = '_'.join((session_number, chamber, today))
     outfile = '.'.join((outfile, 'gif'))
     anim.save(outfile, dpi=80, writer='imagemagick')
+    plt.close(fig)
 
 tsneAnimate.animate = animate
 
@@ -246,9 +237,15 @@ class Animation:
 
         df = self.data
         df.Name = df.Name.map(lambda x: ucd.normalize('NFKD', x.title()))
-        df.Party = df.Party.map({'Democrat': 'D', 'D': 'D', 'ID': 'D', 'Republican': 'R',
-                                 'R': 'R', 'Independent': 'I', 'I': 'I'})
+        df.Party = df.Party.map({'Democrat': 'D', 'D': 'D',
+                                 'Ind. Democrat': 'ID', 'ID': 'ID',
+                                 'Republican': 'R', 'R': 'R',
+                                 'Independent': 'I', 'I': 'I',
+                                 'Progressive': 'P',
+                                 'Farmer-Labor': 'F',
+                                 'American Labor': 'AL'})
         df_chamber = df[df.Chamber == chamber]
+        # print(df[df.Party.isnull()])
 
         return df_chamber
 
@@ -330,9 +327,9 @@ class Animation:
         df_transform = pd.concat([df[['Name', 'Party', 'State']], df_X_transform], axis=1)
 
         le = preprocessing.LabelEncoder()
-        df_transform['Party'] = le.fit_transform(df_transform['Party'])
+        df_transform['Party_Number'] = le.fit_transform(df_transform['Party'])
 
-        return df_X_transform, df_transform[['Name', 'Party', 'State']]
+        return df_X_transform, df_transform[['Name', 'Party', 'Party_Number', 'State']]
 
 
 @click.command()
