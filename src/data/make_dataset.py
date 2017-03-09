@@ -27,11 +27,11 @@ class Congress:
     }
     """
 
-    def __init__(self, session_number):
+    def __init__(self, session):
 
         self._ROOT = str(Path(os.getcwd()).parents[1])
         self._input_data_path = os.path.join(self._ROOT, 'data/raw/')
-        self.session_number = session_number
+        self.session_number = session
         self.input_filepath = os.path.join(self._input_data_path, self.session_number)
         self.measures_voted_on = {}
         self.Records = Records()
@@ -218,8 +218,9 @@ class Dataset:
 
 
 @click.command()
-@click.argument('session_number')
-def main(session_number):
+@click.option('--session', default='113', help='Which session of Congress? (int)')
+@click.option('--all', is_flag=True, help='Process all available sessions data.')
+def main(session, all):
     """ Runs data processing scripts to turn raw data from (../raw) into
     cleaned data ready to be analyzed (saved in ../processed).
 
@@ -228,13 +229,25 @@ def main(session_number):
     """
 
     logger = logging.getLogger(__name__)
-    logger.info('making final data set from raw data')
+    logger.info('Making final data set from raw data')
 
-    congress = Congress(session_number)
-    measures_voted_on, records = congress.get_measures_voted_on()
+    if all:
 
-    dataframe = Dataset().construct(measures_voted_on, records)
-    Dataset().to_file(session_number, dataframe)
+        for x in range(75, 114):
+
+            session = str(x)
+            congress = Congress(session)
+            measures_voted_on, records = congress.get_measures_voted_on()
+
+            dataframe = Dataset().construct(measures_voted_on, records)
+            Dataset().to_file(session, dataframe)
+
+    else:
+        congress = Congress(session)
+        measures_voted_on, records = congress.get_measures_voted_on()
+
+        dataframe = Dataset().construct(measures_voted_on, records)
+        Dataset().to_file(session, dataframe)
 
 if __name__ == '__main__':
     log_fmt = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
